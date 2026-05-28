@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>簿記3級 ネット模試 手順ガイド</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1565c0;
+    --blue-mid: #1e88e5;
+    --blue-light: #42a5f5;
+    --blue-pale: #e3f2fd;
+    --blue-border: #bbdefb;
+    --accent: #00acc1;
+    --accent-pale: #e0f7fa;
+    --red: #d32f2f;
+    --dark: #0d1b2a;
+    --text: #1a2c3d;
+    --muted: #607d8b;
+    --white: #fff;
+    --bg: #f0f7ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ヘッダー */
+  header {
+    background: linear-gradient(135deg, #1565c0 0%, #1e88e5 60%, #00acc1 100%);
+    color: white;
+    padding: 36px 24px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 220px; height: 220px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -70px; left: -40px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .header-label {
+    display: inline-block;
+    background: rgba(255,255,255,0.22);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    padding: 3px 14px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  header h1 {
+    font-size: clamp(20px, 5vw, 28px);
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    line-height: 1.35;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.15);
+  }
+
+  /* メイン */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 28px 16px 52px;
+  }
+
+  /* セクションカード */
+  .section-card {
+    background: white;
+    border-radius: 18px;
+    padding: 26px;
+    margin-bottom: 22px;
+    box-shadow: 0 4px 20px rgba(21,101,192,0.10);
+    border: 1px solid var(--blue-border);
+    animation: fadeUp 0.4s ease both;
+  }
+  .section-card:nth-child(2) { animation-delay: 0.1s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .section-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px;
+    flex-shrink: 0;
+    box-shadow: 0 3px 8px rgba(21,101,192,0.25);
+  }
+  .section-title h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+  .section-title .duration {
+    margin-left: auto;
+    background: var(--blue-pale);
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 11px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* リンクボタン */
+  .link-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue-pale);
+    border: 1.5px solid var(--blue-border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: var(--blue);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    word-break: break-all;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .link-btn:hover {
+    background: var(--blue-border);
+    transform: translateY(-1px);
+  }
+  .link-icon { font-size: 16px; flex-shrink: 0; }
+
+  /* ステップリスト */
+  .steps { list-style: none; }
+  .step-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--blue-pale);
+  }
+  .step-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .step-num {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
+    color: white;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    box-shadow: 0 2px 6px rgba(21,101,192,0.3);
+  }
+  .step-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .step-text strong {
+    color: var(--blue);
+    font-weight: 700;
+  }
+  .step-text .red {
+    color: var(--red);
+    font-weight: 700;
+  }
+  .step-note {
+    display: inline-block;
+    margin-top: 5px;
+    background: var(--accent-pale);
+    border-left: 3px solid var(--accent);
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #006064;
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* 感想レポートカード */
+  .report-card {
+    border-color: #b2ebf2;
+    box-shadow: 0 4px 20px rgba(0,172,193,0.10);
+  }
+  .report-card .section-icon {
+    background: linear-gradient(135deg, var(--accent) 0%, #26c6da 100%);
+    box-shadow: 0 3px 8px rgba(0,172,193,0.3);
+  }
+  .report-card .section-title h2 { color: var(--accent); }
+  .report-card .duration { background: var(--accent-pale); color: #00838f; }
+  .report-card .link-btn {
+    background: var(--accent-pale);
+    border-color: #b2ebf2;
+    color: #00838f;
+  }
+  .report-card .link-btn:hover { background: #b2ebf2; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">本日の流れ</div>
+  <h1>簿記3級 ネット模試<br>手順ガイド</h1>
+</header>
+
+<main>
+
+  <!-- 模擬試験 -->
+  <div class="section-card">
+    <div class="section-title">
+      <div class="section-icon">📝</div>
+      <h2>簿記3級 ネット模擬試験</h2>
+      <span class="duration">60分</span>
+    </div>
+
+    <a class="link-btn" href="https://nsboki-cbt.net-school.co.jp/" target="_blank">
+      <span class="link-icon">🔗</span>
+      https://nsboki-cbt.net-school.co.jp/
+    </a>
+
+    <ul class="steps">
+      <li class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          リンクを開いたら<strong>必要事項を記入</strong>し、プライバシーポリシー及び個人情報の取扱いについての<strong>チェックを入れ「確認」をクリック</strong>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <strong>「3級の模擬試験にチャレンジ！」</strong>をクリック
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>「第1回」を選択</strong>し、<strong>「開始」をクリック</strong>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          受験者への連絡・注意事項を一読し、<strong>「了解」をクリック</strong>
+          <span class="step-note">💡 実際の試験での注意事項が書かれています</span>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-text">
+          【３級第１回】試験開始の画面で内容を読みながらお待ちください。<br>
+          <span class="red">試験開始ボタンを全員同時にクリック</span>して始めます。<br>
+          60分経ちましたら終了の声を掛けます。
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">6</div>
+        <div class="step-text">
+          タイマーが0になるか、問題を解き終わった方は<strong>「試験終了」ボタンを押して</strong>ください。<br>
+          合否画面が表示されます。<strong>「自分の解答を確認」</strong>をクリックすると不正解の解答を確認できます。
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">7</div>
+        <div class="step-text">
+          <strong>解答のPDF・解説動画</strong>を使って復習しましょう 📚
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 感想レポート -->
+  <div class="section-card report-card">
+    <div class="section-title">
+      <div class="section-icon">✏️</div>
+      <h2>感想レポート</h2>
+      <span class="duration">30分</span>
+    </div>
+
+    <a class="link-btn" href="https://forms.gle/FhyTcJQAh18XgjqL9" target="_blank">
+      <span class="link-icon">🔗</span>
+      https://forms.gle/FhyTcJQAh18XgjqL9
+    </a>
+  </div>
+
+</main>
+
+</body>
+</html>
