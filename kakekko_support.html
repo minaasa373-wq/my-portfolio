@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>運動会 徒競走80m サポートまとめ</title>
+<style>
+  :root{
+    --green:#2e7d52;
+    --green-light:#4caf7d;
+    --green-pale:#e8f5ee;
+    --green-bg:#f4faf6;
+    --ink:#1f2d28;
+    --gray:#5b6b64;
+    --line:#d6e6dd;
+    --card:#ffffff;
+    --accent:#f0a500;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
+    color:var(--ink);
+    background:var(--green-bg);
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    background:linear-gradient(135deg,var(--green) 0%,var(--green-light) 100%);
+    color:#fff;
+    padding:48px 24px 40px;
+    text-align:center;
+  }
+  header .emoji{font-size:2.4rem;display:block;margin-bottom:8px;}
+  header h1{font-size:1.7rem;letter-spacing:.02em;margin-bottom:10px;}
+  header p{font-size:.95rem;opacity:.92;}
+
+  nav{
+    position:sticky;top:0;z-index:10;
+    background:rgba(255,255,255,.95);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    display:flex;flex-wrap:wrap;justify-content:center;gap:6px;
+    padding:12px 16px;
+  }
+  nav a{
+    text-decoration:none;
+    color:var(--green);
+    font-size:.85rem;font-weight:600;
+    padding:6px 14px;border-radius:20px;
+    border:1px solid var(--line);
+    transition:.2s;
+  }
+  nav a:hover{background:var(--green);color:#fff;border-color:var(--green);}
+
+  main{max-width:760px;margin:0 auto;padding:40px 20px 60px;}
+  section{margin-bottom:48px;scroll-margin-top:70px;}
+  .sec-title{
+    display:flex;align-items:center;gap:10px;
+    font-size:1.3rem;color:var(--green);
+    border-left:5px solid var(--green-light);
+    padding-left:12px;margin-bottom:18px;
+  }
+  .lead{
+    background:var(--green-pale);
+    border-radius:12px;padding:16px 18px;
+    font-size:.95rem;color:var(--gray);margin-bottom:22px;
+  }
+
+  /* 優先順位ランク */
+  .rank{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:20px 22px;margin-bottom:16px;
+    box-shadow:0 1px 4px rgba(46,125,82,.05);
+  }
+  .rank-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .rank-num{
+    flex-shrink:0;width:38px;height:38px;border-radius:50%;
+    background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:1.1rem;
+  }
+  .rank-num.gold{background:var(--accent);}
+  .rank-title{font-size:1.08rem;font-weight:700;}
+  .rank-tag{
+    font-size:.72rem;background:var(--green-pale);color:var(--green);
+    padding:2px 8px;border-radius:10px;margin-left:auto;font-weight:600;white-space:nowrap;
+  }
+  .rank ul{list-style:none;margin-top:8px;}
+  .rank li{position:relative;padding-left:20px;margin-bottom:8px;font-size:.92rem;}
+  .rank li::before{content:"▶";position:absolute;left:0;color:var(--green-light);font-size:.7rem;top:6px;}
+  .point{background:var(--green-pale);border-radius:6px;padding:1px 6px;font-weight:600;color:var(--green);}
+
+  /* フロー（1ヶ月の進め方） */
+  .flow{display:flex;flex-direction:column;gap:0;}
+  .flow-step{
+    display:flex;gap:14px;position:relative;padding-bottom:22px;
+  }
+  .flow-step:not(:last-child)::before{
+    content:"";position:absolute;left:18px;top:38px;bottom:0;
+    width:2px;background:var(--line);
+  }
+  .flow-dot{
+    flex-shrink:0;width:38px;height:38px;border-radius:50%;
+    background:var(--green-light);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:.78rem;font-weight:700;z-index:1;text-align:center;line-height:1.1;
+  }
+  .flow-body{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;flex:1;}
+  .flow-body h4{font-size:.98rem;color:var(--green);margin-bottom:4px;}
+  .flow-body p{font-size:.88rem;color:var(--gray);}
+
+  /* 注意ボックス */
+  .warn{
+    background:#fff6e6;border:1px solid #f3d98a;border-left:5px solid var(--accent);
+    border-radius:10px;padding:16px 18px;font-size:.92rem;
+  }
+  .warn strong{color:#c47e00;}
+
+  /* 裏ワザ・締め */
+  .tip{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;font-size:.93rem;
+  }
+  .closing{
+    background:linear-gradient(135deg,var(--green) 0%,var(--green-light) 100%);
+    color:#fff;border-radius:16px;padding:26px 24px;text-align:center;
+  }
+  .closing p{font-size:.96rem;opacity:.95;}
+  .closing .big{font-size:1.1rem;font-weight:700;margin-bottom:8px;opacity:1;}
+
+  /* AI手段メモ */
+  .memo{
+    background:var(--card);border:1px dashed var(--green-light);
+    border-radius:14px;padding:18px 20px;font-size:.9rem;color:var(--gray);
+  }
+  .memo h4{color:var(--green);font-size:.98rem;margin-bottom:8px;}
+
+  footer{text-align:center;font-size:.78rem;color:var(--gray);padding:24px;border-top:1px solid var(--line);}
+  footer a{color:var(--green);}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji">🏃‍♀️💨</span>
+  <h1>運動会 徒競走80m サポートまとめ</h1>
+  <p>あと1ヶ月で「1位を狙う」ための優先順位つき練習ガイド</p>
+</header>
+
+<nav>
+  <a href="#priority">効く優先順位</a>
+  <a href="#plan">1ヶ月の進め方</a>
+  <a href="#caution">大事な注意</a>
+  <a href="#tips">サポートの裏ワザ</a>
+
+</nav>
+
+<main>
+
+  <section id="priority">
+    <h2 class="sec-title">🎯 1ヶ月で効く優先順位</h2>
+    <div class="lead">
+      足の速い遅い以前に、<strong>伸びしろが大きいのはスタートとゴール</strong>。フォーム全体をいじると逆に遅くなることがあるので、1ヶ月ならここを重点的に。
+    </div>
+
+    <div class="rank">
+      <div class="rank-head">
+        <div class="rank-num gold">1</div>
+        <div class="rank-title">スタートダッシュ</div>
+        <div class="rank-tag">一番伸びる</div>
+      </div>
+      <p style="font-size:.9rem;color:var(--gray);">80mは前半の差がそのまま順位になりやすい。</p>
+      <ul>
+        <li>最大のポイントは<span class="point">前傾姿勢</span>。前足体重で、今にも前に倒れそうな構えを覚えさせる</li>
+        <li>合図で勢いよく腕をスイング。ゆったりより<span class="point">遠くへ大きく一歩目</span>を踏み出す</li>
+        <li>「ヨーイ」で静止 → 手を叩いて反応する<span class="point">反応ゲーム</span>にすると楽しく続く</li>
+      </ul>
+    </div>
+
+    <div class="rank">
+      <div class="rank-head">
+        <div class="rank-num">2</div>
+        <div class="rank-title">ゴールまで止めない</div>
+        <div class="rank-tag">後半失速対策</div>
+      </div>
+      <ul>
+        <li>失速しがちな後半は<span class="point">腕を素早く振る</span>のが効く</li>
+        <li>「ゴールの5m先まで走る」イメージで最後まで減速しない</li>
+      </ul>
+    </div>
+
+    <div class="rank">
+      <div class="rank-head">
+        <div class="rank-num">3</div>
+        <div class="rank-title">腕振り</div>
+        <div class="rank-tag">唯一いじる価値あり</div>
+      </div>
+      <ul>
+        <li>肘は<span class="point">直角キープ</span>。伸びると遠心力で振りが遅くなる</li>
+        <li>手のひらは開いたまま。握りこぶしは余計な力が入る</li>
+        <li>正しく振ると骨盤が連動し、足が効率よく前に出る。腕は「エンジン」と教える</li>
+      </ul>
+    </div>
+
+    <div class="rank">
+      <div class="rank-head">
+        <div class="rank-num">4</div>
+        <div class="rank-title">姿勢・体幹</div>
+        <div class="rank-tag">土台づくり</div>
+      </div>
+      <ul>
+        <li>体幹が安定すると腕・脚が連動し、少ない力で効率よく進める</li>
+        <li>プランクやけんけんを遊びの中に入れる程度でOK</li>
+        <li>走る姿勢は、蹴り出した脚と引き上げた脚で<span class="point">数字の「7」</span>を作るイメージ</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="plan">
+    <h2 class="sec-title">📅 1ヶ月の進め方</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-dot">最初の<br>2週</div>
+        <div class="flow-body">
+          <h4>フォームを体に入れる</h4>
+          <p>スタート姿勢＋反応練習、腕振りフォームをじっくり覚える期間。</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot">後半<br>2週</div>
+        <div class="flow-body">
+          <h4>ダッシュで仕上げ</h4>
+          <p>30〜50mのダッシュを数本（全力→しっかり休む）。ゴール手前で緩めない練習。</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot">直前<br>数日</div>
+        <div class="flow-body">
+          <h4>疲労を抜く</h4>
+          <p>新しいことはやらない。できることの確認だけして本番へ。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="caution">
+    <h2 class="sec-title">⚠️ 大事な注意</h2>
+    <div class="warn">
+      脚の動きは直前に改善しようとすると、速くなるどころか<strong>変な動きになって遅くなる</strong>ことも。直前は自分がやりやすいことに絞るのが大切。だから「足の運び方」のような根本改造はやらない方が無難です。
+    </div>
+  </section>
+
+  <section id="tips">
+    <h2 class="sec-title">💡 サポートの裏ワザ</h2>
+    <div class="tip">
+      スマホで走りを<strong>動画に撮る</strong>のが効果的。客観的に自分の走る姿を見ると癖を理解しやすく、正しいフォームも覚えやすい。「ここ良くなったね」とビフォーアフターで見せると、本人のやる気が続きます。
+    </div>
+  </section>
+
+  <div class="closing">
+    <p class="big">最後にひとつだけ 😊</p>
+    <p>順位は当日の組み合わせ運もあるので、「1位」をゴールにしすぎず<br>「先週より速くなった」を一緒に喜べると、<br>結果がどうあれ娘さんにとっていい1ヶ月になります。</p>
+  </div>
+
+</main>
+
+<footer>
+  運動会サポートまとめ ／ 出典：JPCスポーツ教室・DCマガジン・みらスポ・陸上トレーニングスクール 等
+</footer>
+
+</body>
+</html>
