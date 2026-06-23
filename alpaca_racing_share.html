@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>あるぱかプリンス レーシング 開発シェア</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #fbfcfa;
+    --surface: #ffffff;
+    --ink: #2c3a30;
+    --ink-soft: #5d6b60;
+    --green: #4a7c59;
+    --green-deep: #2f5d40;
+    --green-light: #e8f1ea;
+    --green-bright: #6fae7e;
+    --accent: #c8954a;
+    --line: #e2e9e3;
+    --shadow: 0 2px 12px rgba(47, 93, 64, 0.06);
+    --shadow-lg: 0 8px 30px rgba(47, 93, 64, 0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+  /* ===== 進捗バー ===== */
+  .progress {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--green-bright); width: 0%;
+    z-index: 200; transition: width .1s;
+  }
+
+  /* ===== ヒーロー ===== */
+  .hero {
+    padding: 88px 24px 64px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, var(--green-light) 0%, transparent 70%);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .eyebrow {
+    display: inline-block;
+    font-size: .78rem;
+    letter-spacing: .16em;
+    color: var(--green);
+    font-weight: 700;
+    padding: 5px 16px;
+    border: 1px solid var(--green-bright);
+    border-radius: 999px;
+    margin-bottom: 26px;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    font-weight: 900;
+    color: var(--green-deep);
+    line-height: 1.25;
+    letter-spacing: .01em;
+  }
+  .hero h1 .small {
+    display: block;
+    font-size: .42em;
+    color: var(--ink-soft);
+    font-weight: 700;
+    margin-top: 14px;
+    letter-spacing: .04em;
+  }
+  .hero p.intro {
+    max-width: 560px;
+    margin: 26px auto 0;
+    color: var(--ink-soft);
+    font-size: 1.02rem;
+  }
+
+  /* ===== セクション共通 ===== */
+  section.block { padding: 56px 0; border-bottom: 1px solid var(--line); }
+
+  .sec-head { margin-bottom: 32px; }
+  .sec-num {
+    font-size: .8rem;
+    font-weight: 800;
+    color: var(--green-bright);
+    letter-spacing: .14em;
+  }
+  .sec-head h2 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    font-weight: 800;
+    color: var(--green-deep);
+    margin-top: 6px;
+    line-height: 1.35;
+  }
+  .sec-head .desc {
+    margin-top: 12px;
+    color: var(--ink-soft);
+    font-size: 1.0rem;
+  }
+
+  /* ===== カード ===== */
+  .grid { display: grid; gap: 18px; }
+  .grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 24px;
+    box-shadow: var(--shadow);
+  }
+  .card .tag {
+    display: inline-block;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+    color: var(--green);
+    background: var(--green-light);
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .card h3 { font-size: 1.12rem; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+  .card p { color: var(--ink-soft); font-size: .96rem; }
+  .card strong { color: var(--green-deep); }
+
+  /* ===== タイムライン（番号付きステップ）===== */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .t-item {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 20px;
+    position: relative;
+    padding-bottom: 28px;
+  }
+  .t-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 25px; top: 44px; bottom: 0;
+    width: 2px; background: var(--line);
+  }
+  .t-dot {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--green-light);
+    border: 2px solid var(--green-bright);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    z-index: 1;
+  }
+  .t-body h3 { font-size: 1.08rem; font-weight: 800; color: var(--ink); margin: 8px 0 6px; }
+  .t-body p { color: var(--ink-soft); font-size: .96rem; }
+  .t-body strong { color: var(--green-deep); }
+
+  /* ===== 図版（画像）===== */
+  figure {
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    background: var(--surface);
+  }
+  figure img { display: block; width: 100%; height: auto; }
+  figure figcaption {
+    padding: 12px 18px;
+    font-size: .86rem;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+  figure figcaption b { color: var(--green-deep); }
+
+  .img-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 18px; }
+
+  /* ===== 取り消し線（ユーモア）===== */
+  .strike { text-decoration: line-through; text-decoration-color: var(--accent); color: var(--ink-soft); }
+
+  /* ===== Before/After ===== */
+  .ba { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 18px; }
+  .ba-box { border-radius: 16px; padding: 22px; }
+  .ba-box.bad { background: #fdf4f1; border: 1px solid #efd6cc; }
+  .ba-box.good { background: var(--green-light); border: 1px solid var(--green-bright); }
+  .ba-box .ba-label { font-size: .78rem; font-weight: 800; letter-spacing: .05em; margin-bottom: 10px; }
+  .ba-box.bad .ba-label { color: #b5673f; }
+  .ba-box.good .ba-label { color: var(--green-deep); }
+  .ba-box .ba-ico { font-size: 1.8rem; margin-bottom: 8px; }
+  .ba-box p { font-size: .93rem; color: var(--ink-soft); }
+
+  /* ===== 注意ボックス ===== */
+  .callout {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: #fdfaf2;
+    border: 1px solid #ecdfc0;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px;
+    margin-top: 20px;
+  }
+  .callout .c-ico { font-size: 1.3rem; }
+  .callout p { font-size: .94rem; color: #6b5a38; }
+  .callout strong { color: #9a7322; }
+
+  /* ===== ハイライト ===== */
+  .quote {
+    background: var(--green-deep);
+    color: #fff;
+    border-radius: 18px;
+    padding: 36px 32px;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .quote .big {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 800;
+    line-height: 1.6;
+  }
+  .quote .sub { margin-top: 14px; font-size: .95rem; color: rgba(255,255,255,0.78); }
+
+  /* ===== ツールバッジ ===== */
+  .tools { display: flex; flex-wrap: wrap; gap: 12px; }
+  .tool {
+    display: flex; flex-direction: column; gap: 4px;
+    flex: 1 1 200px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+  .tool .t-name { font-weight: 800; color: var(--green-deep); font-size: 1.02rem; }
+  .tool .t-name span { font-size: 1.3rem; margin-right: 6px; }
+  .tool .t-use { font-size: .9rem; color: var(--ink-soft); }
+
+  /* ===== リンクボタン ===== */
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: .98rem;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn.primary { background: var(--green); color: #fff; box-shadow: var(--shadow); }
+  .btn.ghost { background: var(--surface); color: var(--green-deep); border: 1px solid var(--green-bright); }
+  .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+  /* ===== 数字 ===== */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 16px; }
+  .stat { text-align: center; padding: 18px; }
+  .stat .n { font-size: 2.6rem; font-weight: 900; color: var(--green); line-height: 1; }
+  .stat .l { font-size: .84rem; color: var(--ink-soft); margin-top: 8px; }
+
+  /* ===== フッター ===== */
+  footer {
+    text-align: center;
+    padding: 48px 24px 64px;
+    color: var(--ink-soft);
+    font-size: .9rem;
+  }
+
+  .center { text-align: center; }
+
+  @media (max-width: 600px) {
+    .t-item { grid-template-columns: 44px 1fr; gap: 14px; }
+    .t-dot { width: 44px; height: 44px; font-size: 1.2rem; }
+    .t-item:not(:last-child)::before { left: 21px; top: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- ============ ヒーロー ============ -->
+<header class="hero">
+  <span class="eyebrow">DX受講生むけ 開発シェア</span>
+  <h1>
+    あるぱかプリンス レーシングを<br>作ってみた話
+    <span class="small">4月に学んだAI・Web・GitHubが、全部つながった</span>
+  </h1>
+  <p class="intro">
+    プログラミングをほとんど書けない私でも、AIと一緒に3Dレーシングゲームが作れました。
+    どうやって作ったのか、使ったツールやコツを、なるべくやさしくまとめます。
+  </p>
+</header>
+
+<!-- ============ 01 きっかけ ============ -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">01 — きっかけ</div>
+      <h2>すべては4月のコースから始まった</h2>
+      <p class="desc">学んだことを「使ってみたい」という気持ちが、このゲームの出発点でした。</p>
+    </div>
+
+    <div class="timeline">
+      <div class="t-item">
+        <div class="t-dot">🎓</div>
+        <div class="t-body">
+          <h3>4月「社員教育とAIコース」でWeb制作・アプリ開発を学んだ</h3>
+          <p>このコースで学んだ知識が、ゲームを作るすべての土台になりました。あわせて <strong>Claude AI</strong> と <strong>GitHub</strong> も4月から使い始めました。</p>
+        </div>
+      </div>
+      <div class="t-item">
+        <div class="t-dot">📸</div>
+        <div class="t-body">
+          <h3>今月のInstagram課題が終わって、<span class="strike">暇すぎて</span>何か作りたくなった</h3>
+          <p>課題と追加投稿も終わり、せっかくなので… 栗原さんのVTuber「<strong>あるぱかプリンス</strong>」の二次創作に挑戦してみよう、と思い立ちました。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 最初のアイデア（シューティング） ============ -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">02 — 最初のアイデア</div>
+      <h2>じつは最初、シューティングゲームを考えていた</h2>
+      <p class="desc">ネタで作った生成画像をそのままゲームにしたかったのですが…結論から言うと断念しました。</p>
+    </div>
+
+    <div class="img-pair" style="margin-bottom:22px;">
+      <figure>
+        <img src="https://minaasa373-wq.github.io/my-portfolio/alpaca-shooting1.png" alt="あるぱかプリンス シューティングのプレイ画面イメージ" loading="lazy">
+        <figcaption><b>横スクロールSTGのプレイ画面イメージ</b>／AIに生成してもらった構想画像</figcaption>
+      </figure>
+      <figure>
+        <img src="https://minaasa373-wq.github.io/my-portfolio/alpaca-shooting2.png" alt="あるぱかプリンス シューティングの必殺技カットインイメージ" loading="lazy">
+        <figcaption><b>必殺技（ボム）カットインのイメージ</b>／技名つきの演出シーン</figcaption>
+      </figure>
+    </div>
+
+    <div class="callout">
+      <span class="c-ico">💭</span>
+      <p><strong>なぜ断念したか：</strong>AIエージェントでちゃんと動くものを一から作るには追加課金が必要だったり、手間がかかりそうでした。そこで別の方法を探すことに。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 出発点を見つける（GitHub） ============ -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">03 — 出発点を見つける</div>
+      <h2>海外の掲示板で「使える素材」を発見</h2>
+      <p class="desc">ゼロから作るのではなく、すでにあるものを土台にする。ここで GitHub が大活躍しました。</p>
+    </div>
+
+    <div class="timeline" style="margin-bottom:8px;">
+      <div class="t-item">
+        <div class="t-dot">🌏</div>
+        <div class="t-body">
+          <h3>Reddit（海外の掲示板）で3Dレーシングゲームを発見</h3>
+          <p>「Codex で3Dレーシングゲームを作ったよ」という投稿を見つけました。ソースコードが <strong>GitHub で公開されていた</strong>ので、これを土台にしようと決めました。</p>
+        </div>
+      </div>
+      <div class="t-item">
+        <div class="t-dot">🍴</div>
+        <div class="t-body">
+          <h3>「フォーク」して自分のコピーを作る</h3>
+          <p>GitHubの<strong>フォーク</strong>機能で、公開されたゲームを丸ごと自分のアカウントにコピー。そこから Claude AI と一緒に、あるぱかプリンスの世界観へ作り変えていきました。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="btns" style="margin-bottom:28px;">
+      <a class="btn ghost" href="https://github.com/dante01yoon/codex-3d-racing-game" target="_blank" rel="noopener">📦 元データの GitHub リポジトリ</a>
+    </div>
+
+    <h3 style="font-size:1.15rem;color:var(--green-deep);margin-bottom:14px;">GitHub の凄さを嫁さんに話したら、全く伝わらなかった話（笑）</h3>
+    <p style="color:var(--ink-soft);margin-bottom:18px;">一言でいうと「コード専用のクラウド・タイムマシン」。何が便利なのか、図にしてみました。</p>
+
+    <div class="ba">
+      <div class="ba-box bad">
+        <div class="ba-ico">😰</div>
+        <div class="ba-label">GitHub なしの世界</div>
+        <p>「最終版_本当に最後_これで決定.zip」が量産される。間違えて消したらもう戻れない。誰が何を直したかも分からない。</p>
+      </div>
+      <div class="ba-box good">
+        <div class="ba-ico">😎</div>
+        <div class="ba-label">GitHub ありの世界</div>
+        <p>変更はすべて記録され、いつでも巻き戻せる。世界中の公開コードをコピーして出発点にできる。今回もそれで作れた。</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.15rem;color:var(--green-deep);margin:32px 0 14px;">「オープンソース」だから、すごい。でも、気をつけることも。</h3>
+    <p style="color:var(--ink-soft);margin-bottom:18px;">コードを誰でも見られる・使える形で公開することを<strong style="color:var(--green-deep)">オープンソース</strong>といいます。これには良い面と注意すべき面の両方があります。</p>
+
+    <div class="ba">
+      <div class="ba-box good">
+        <div class="ba-ico">🤝</div>
+        <div class="ba-label">良いところ</div>
+        <p>世界中の人がコードを共有し、改良を持ち寄れる。だから開発がどんどん進む。今回のように、他の人の成果を土台にして自分の作品を作ることもできる。</p>
+      </div>
+      <div class="ba-box bad">
+        <div class="ba-ico">🔍</div>
+        <div class="ba-label">気をつけるところ</div>
+        <p>誰でも公開できるぶん、<strong style="color:#b5673f">未完成・動かないコード</strong>もある。なかには<strong style="color:#b5673f">ウイルスが仕込まれている</strong>こともあるので、信頼できそうな相手のものか確認してから使うのが安心。</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="c-ico">⚠️</span>
+      <p><strong>初心者が注意する点：</strong>公開（Public）リポジトリは<strong>インターネット全体に見えてしまいます</strong>。パスワードや個人情報、APIキーなどは絶対に置かないこと。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 使ったAIツール ============ -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">04 — 使ったツール</div>
+      <h2>素材は全部、無料のAIで用意した</h2>
+      <p class="desc">コードも、音楽も、3Dモデルも、画像も。それぞれ得意なAIに任せました。</p>
+    </div>
+
+    <div class="tools" style="margin-bottom:26px;">
+      <div class="tool">
+        <div class="t-name"><span>🤖</span>Claude AI / Claude Code</div>
+        <div class="t-use">ゲームのコード修正・機能追加。「〇〇したい」と日本語で伝えるだけで実装してくれる。</div>
+      </div>
+      <div class="tool">
+        <div class="t-name"><span>🎵</span>Suno AI</div>
+        <div class="t-use">BGMをAIで作曲。疾走感とサビの盛り上がりをイメージして生成。</div>
+      </div>
+      <div class="tool">
+        <div class="t-name"><span>🧊</span>Meshy AI</div>
+        <div class="t-use">画像から3Dモデル（.glb）を無料生成。キャラを車に乗せるのに使用。</div>
+      </div>
+      <div class="tool">
+        <div class="t-name"><span>🖼️</span>画像生成AI</div>
+        <div class="t-use">デフォルメキャラのシート → タイトル・リザルト画面の背景を生成。</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:26px;">
+      <span class="tag">🎵 BGMのこだわり</span>
+      <h3>「うまぴょい伝説」をお手本にした疾走感ある曲</h3>
+      <p>ゲーム「ウマ娘」の楽曲をAIに<strong>ディープリサーチ</strong>してもらってから、ネタ寄りの歌詞・疾走感・盛り上がるサビをイメージして作詞作曲。生成しながら自分でも手直しして仕上げました。</p>
+      <div class="btns">
+        <a class="btn primary" href="https://suno.com/s/BjEwuKZAwofW9K1A" target="_blank" rel="noopener">▶ BGMを聴いてみる</a>
+      </div>
+    </div>
+
+    <div class="sec-head" style="margin-bottom:18px;">
+      <h2 style="font-size:1.4rem;">キャラを乗せるために作った素材</h2>
+    </div>
+
+    <div class="grid cols-2" style="margin-bottom:18px;">
+      <figure>
+        <img src="https://minaasa373-wq.github.io/alpaca-3d-racing-game/assets/character_sheet.png" alt="あるぱかプリンスのデフォルメキャラクターシート" loading="lazy">
+        <figcaption><b>キャラクターシート</b>／3Dモデル化＆画像生成のための土台にした</figcaption>
+      </figure>
+      <figure>
+        <img src="https://minaasa373-wq.github.io/alpaca-3d-racing-game/assets/title.jpg" alt="あるぱかプリンスレーシングのタイトル画面" loading="lazy">
+        <figcaption><b>タイトル画面</b>／キャラシートをもとにAIで生成</figcaption>
+      </figure>
+    </div>
+
+    <div class="callout">
+      <span class="c-ico">🏎️</span>
+      <p>マリオカートみたいに「車にキャラを乗せたい」と言ったら<strong>3Dモデルが必要</strong>と言われ😭 → Meshy AI で画像から3Dモデルを無料で作って解決しました。サウンドは著作権フリーの音源も活用しています。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 改善プロセス ============ -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-num">05 — 磨き上げ</div>
+      <h2>最初は40点。そこから直していった</h2>
+      <p class="desc">完成度が低くても大丈夫。やり方はとてもシンプルでした。</p>
+    </div>
+
+    <div class="quote" style="margin-bottom:26px;">
+      <div class="big">気になるところを全部 箇条書きにする<br>→ Claude に渡す → まとめて直してもらう</div>
+      <div class="sub">自分でコードを一行ずつ直す必要はありません。「やりたいこと」を言葉にするだけ。</div>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <span class="tag">追加した演出</span>
+        <h3>レースらしい盛り上げ</h3>
+        <p>3-2-1-GOのスタートカウントダウン（効果音つき）、ゴール後の<strong>リザルト画面を画像つきで豪華に</strong>、記録のスクショ保存ボタンなど。</p>
+      </div>
+      <div class="card">
+        <span class="tag">遊びやすさ改善</span>
+        <h3>操作とカメラを調整</h3>
+        <p>カメラをドライバー視点に近づけ、コース幅を広げてコースアウトを軽減。Escキーでいつでも操作説明が見られるように。</p>
+      </div>
+    </div>
+
+    <figure style="margin-top:24px;">
+      <img src="https://minaasa373-wq.github.io/alpaca-3d-racing-game/assets/result.jpg" alt="あるぱかプリンスレーシングのリザルト画面" loading="lazy">
+      <figcaption><b>作り込んだリザルト画面</b>／合計タイム・ベストラップ・ポイントを表示</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 06 完成 ============ -->
+<section class="block" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="sec-head center">
+      <div class="sec-num">06 — 完成！</div>
+      <h2>🏁 あるぱかプリンス レーシング、完成</h2>
+    </div>
+
+    <div class="stats" style="margin-bottom:32px;">
+      <div class="stat"><div class="n">0円</div><div class="l">かかった費用<br>（無料ツールのみ）</div></div>
+      <div class="stat"><div class="n">3D</div><div class="l">ブラウザで動く<br>3Dゲーム</div></div>
+      <div class="stat"><div class="n">4月</div><div class="l">コース受講から<br>ここまで来た</div></div>
+    </div>
+
+    <div class="btns center" style="justify-content:center;margin-bottom:32px;">
+      <a class="btn primary" href="https://minaasa373-wq.github.io/alpaca-3d-racing-game/" target="_blank" rel="noopener">🎮 ゲームをプレイする</a>
+      <a class="btn ghost" href="https://github.com/dante01yoon/codex-3d-racing-game" target="_blank" rel="noopener">📦 元データ GitHub</a>
+    </div>
+
+    <div class="quote">
+      <div class="big">「やりたいことを言葉にする力」があれば、<br>コードが書けなくても、ゲームは作れる。</div>
+      <div class="sub">4月に学んだことは、ちゃんと全部つながって、使えました。</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  あるぱかプリンス レーシング 開発シェア資料 ／ 二次創作（栗原さん「あるぱかプリンス」VTuber）
+</footer>
+
+<script>
+  const bar = document.getElementById('progress');
+  document.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (window.scrollY / h * 100) + '%';
+  }, { passive: true });
+</script>
+</body>
+</html>
