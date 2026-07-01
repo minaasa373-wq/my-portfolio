@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ソフトを持っていなくても学べる 動画編集の基礎</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ブルーグリーン系（メイン） #33BEC5 を基準に濃淡を展開 */
+    --green-900: #0d4a4e;   /* 見出し・濃い文字用の深いティール */
+    --green-700: #167e83;   /* リンク・強め要素 */
+    --green-500: #33bec5;   /* メインカラー */
+    --green-300: #8fdde1;   /* 補助 */
+    --green-100: #cdeef0;   /* チップ・淡い面 */
+    --green-50:  #eafafb;   /* ごく淡い面 */
+    --ink:       #16302f;
+    --ink-soft:  #3e5453;
+    --muted:     #7a908f;
+    --line:      #d6ecec;
+    --bg:        #e7f9f9;   /* 背景：薄いグリーン（70%） */
+    --white:     #ffffff;
+    /* オレンジ系（アクセント・5%に限定） #F17C1D */
+    --accent:      #f17c1d;
+    --accent-dark: #c9610d;
+    --accent-soft: #fdecd9;
+    --accent-line: #f8d3ac;
+    --shadow:    0 1px 2px rgba(13,74,78,.05), 0 8px 24px rgba(13,74,78,.08);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 150px; }
+  body {
+    margin: 0;
+    font-family: 'Zen Kaku Gothic New', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.85;
+    font-feature-settings: "palt";
+    letter-spacing: 0.02em;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    background: linear-gradient(135deg, var(--green-700) 0%, var(--green-900) 100%);
+    color: var(--white);
+    padding: 60px 32px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: "";
+    position: absolute;
+    top: -90px; right: -70px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(143,221,225,.30) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header::after {
+    content: "🎬";
+    position: absolute;
+    right: 34px; bottom: 18px;
+    font-size: 96px;
+    opacity: .14;
+  }
+  .header-inner { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+  .header-eyebrow {
+    display: inline-block;
+    font-size: 12.5px;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.22);
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 30px;
+    line-height: 1.5;
+    margin: 0 0 14px;
+    font-weight: 700;
+  }
+  .header-sub { font-size: 15.5px; color: #eafafb; opacity: 1; margin: 0; max-width: 640px; text-shadow: 0 1px 2px rgba(0,0,0,.18); }
+
+  /* ===== Nav ===== */
+  .nav {
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    z-index: 50;
+  }
+  .nav-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    padding: 10px 20px;
+    justify-content: center;
+  }
+  .nav a {
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--green-700);
+    padding: 7px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background .2s, color .2s;
+  }
+  .nav a:hover { background: var(--green-50); }
+
+  /* ===== Main ===== */
+  main { max-width: 860px; margin: 0 auto; padding: 44px 24px 80px; }
+  section { margin-bottom: 56px; scroll-margin-top: 150px; }
+
+  .section-eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 24px;
+    color: var(--green-900);
+    margin: 0 0 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h2 .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+    background: var(--accent);
+    color: var(--white);
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 900;
+  }
+  h3 {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 17.5px;
+    color: var(--green-900);
+    margin: 0 0 10px;
+  }
+  p { margin: 0 0 14px; color: var(--ink-soft); }
+  strong { color: var(--green-900); font-weight: 700; }
+
+  /* ===== Intro lead ===== */
+  .lead-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--accent);
+    border-radius: 14px;
+    padding: 26px 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+  }
+  .lead-card p:last-child { margin-bottom: 0; }
+
+  /* ===== Card ===== */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 26px 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  .card:last-child { margin-bottom: 0; }
+
+  /* ===== Analogy box (metaphor) ===== */
+  .analogy {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 4px 0 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .analogy .ic { font-size: 22px; flex-shrink: 0; line-height: 1.5; }
+  .analogy p { margin: 0; color: #8a4e12; font-size: 14.5px; }
+  .analogy strong { color: var(--accent-dark); }
+
+  /* ===== Term chip ===== */
+  .term {
+    display: inline-block;
+    background: var(--green-100);
+    color: var(--green-700);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 2px 10px;
+    border-radius: 6px;
+    margin: 0 2px;
+  }
+
+  /* ===== Step list ===== */
+  .steps { list-style: none; padding: 0; margin: 0; counter-reset: step; }
+  .steps li {
+    position: relative;
+    padding: 0 0 22px 46px;
+    counter-increment: step;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 0;
+    width: 30px; height: 30px;
+    background: var(--green-500);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+  }
+  .steps li::after {
+    content: "";
+    position: absolute;
+    left: 14px; top: 32px; bottom: 2px;
+    width: 2px;
+    background: var(--green-100);
+  }
+  .steps li:last-child { padding-bottom: 0; }
+  .steps li:last-child::after { display: none; }
+  .steps li strong { display: block; margin-bottom: 2px; }
+  .steps li span { color: var(--ink-soft); font-size: 14.5px; }
+
+  /* ===== Key list ===== */
+  .keylist { list-style: none; padding: 0; margin: 0; }
+  .keylist li {
+    position: relative;
+    padding: 8px 0 8px 30px;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .keylist li:last-child { border-bottom: none; }
+  .keylist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0; top: 8px;
+    color: var(--green-500);
+    font-weight: 900;
+  }
+
+  /* ===== Number reference table ===== */
+  .ref {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 6px;
+  }
+  .ref th, .ref td {
+    text-align: left;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .ref th {
+    background: var(--green-50);
+    color: var(--green-900);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .ref td { color: var(--ink-soft); }
+  .ref td:first-child { font-weight: 700; color: var(--green-900); white-space: nowrap; }
+  .ref-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+
+  /* ===== Callout ===== */
+  .callout {
+    background: var(--green-50);
+    border: 1px solid var(--green-100);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0 0;
+    font-size: 14px;
+    color: var(--green-900);
+  }
+  .callout strong { color: var(--green-700); }
+
+  /* ===== Free tool grid ===== */
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-top: 6px;
+  }
+  .tool {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+  .tool h4 {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    margin: 0 0 4px;
+    font-size: 16px;
+    color: var(--green-900);
+  }
+  .tool .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--green-100);
+    color: var(--green-700);
+    margin-bottom: 8px;
+  }
+  .tool p { font-size: 13.5px; margin: 0; }
+
+  /* ===== Map (Premiere→共通) ===== */
+  .map-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+  .map {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 520px;
+  }
+  .map th, .map td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+  .map th { background: var(--green-700); color: var(--white); font-weight: 700; font-size: 13px; }
+  .map td:first-child { font-weight: 700; color: var(--green-900); }
+  .map tr:last-child td { border-bottom: none; }
+
+  /* ===== Footer ===== */
+  footer {
+    text-align: center;
+    padding: 36px 24px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--line);
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  footer strong { color: var(--green-700); }
+
+  @media (max-width: 640px) {
+    .header { padding: 44px 20px 56px; }
+    .header h1 { font-size: 23px; }
+    main { padding: 32px 18px 60px; }
+    h2 { font-size: 20px; }
+    .card, .lead-card { padding: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <span class="header-eyebrow">DX COURSE ｜ 動画編集の基礎</span>
+    <h1>ソフトを持っていなくても学べる<br>動画編集の「共通言語」</h1>
+    <p class="header-sub">ある解説動画から、Premiere Proを持っていない人でも身につけられる「どの編集ソフトでも通用する考え方」だけを抜き出してまとめました。ボタンの位置ではなく、土台となる仕組みを学びます。</p>
+  </div>
+</header>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#intro">この資料について</a>
+    <a href="#structure">土台の考え方</a>
+    <a href="#workflow">編集の流れ</a>
+    <a href="#cut">カット</a>
+    <a href="#telop">テロップ</a>
+    <a href="#color">色の補正</a>
+    <a href="#audio">音の調整</a>
+    <a href="#export">書き出し</a>
+    <a href="#map">用語の対応表</a>
+    <a href="#free">無料で始める</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ===== Intro ===== -->
+  <section id="intro">
+    <div class="lead-card">
+      <p><strong>「編集ソフトを持っていないと、動画編集は学べない」——そんなことはありません。</strong></p>
+      <p>今回のもとになった解説動画は、たしかにPremiere Proという有料ソフトを使っています。でも、その中で語られている大事なことのほとんどは、<strong>ソフトが変わっても通用する「共通の考え方」</strong>です。プロジェクトとは何か、なぜ色を補正するのか、音はどう整えるのか。こうした土台は、CapCutでもDaVinci Resolveでも、スマホアプリでも同じです。</p>
+      <p>この資料は、動画の内容から<strong>ソフトに関係なく使える部分だけ</strong>を取り出し、専門用語を身近な言葉に言い換えてまとめたものです。読み終わるころには「動画編集ってこういう流れなんだ」という地図が頭の中にできあがっているはずです。</p>
+    </div>
+  </section>
+
+  <!-- ===== 土台の考え方 ===== -->
+  <section id="structure">
+    <span class="section-eyebrow">FOUNDATION</span>
+    <h2><span class="num">1</span>まず知りたい、2つの土台</h2>
+    <p>細かい操作の前に、これだけは押さえておきたい2つの言葉があります。どんな編集ソフトにも必ず登場する、いちばん基本の枠組みです。</p>
+
+    <div class="card">
+      <h3>① プロジェクト＝作業をする「部屋」</h3>
+      <p>編集作業は<span class="term">プロジェクト</span>という単位でまとめて保存します。動画1本ぶんの素材・カット・テロップなどが、すべてこの中に入ります。</p>
+      <div class="analogy">
+        <span class="ic">🚪</span>
+        <p><strong>たとえるなら「部屋」。</strong>案件が変わったら新しい部屋に入る感覚です。1つの動画につき1つの部屋をつくると、素材がごちゃ混ぜにならず整理できます。</p>
+      </div>
+      <div class="callout"><strong>共通ポイント：</strong>どのソフトでも「新しい編集を始める＝新しい入れ物をつくる」ところからスタートします。名前は「日付＋動画タイトル」にしておくと、あとで探しやすくなります。</div>
+    </div>
+
+    <div class="card">
+      <h3>② シーケンス／タイムライン＝完成形の「キャンバス」</h3>
+      <p><span class="term">シーケンス</span>は、これから作る動画の設計図であり土台です。素材を並べていく横長の作業スペースを<span class="term">タイムライン</span>と呼びます。</p>
+      <div class="analogy">
+        <span class="ic">🖼️</span>
+        <p><strong>たとえるなら「キャンバス」。</strong>絵を描くとき、描きたいものに合わせて紙の大きさや向き（横向き／縦向き）を決めますよね。動画も同じで、最初に「どんなサイズの動画をつくるか」を決めます。</p>
+      </div>
+      <div class="callout"><strong>共通ポイント：</strong>横長のYouTube向けか、縦長のSNS（ショート・リール）向けかで、キャンバスの向きが変わります。ここを最初に決めておくのが大切です。</div>
+    </div>
+
+    <div class="card">
+      <h3>知っておきたい「サイズ」と「なめらかさ」</h3>
+      <p>動画には2つの基本設定があります。用語は難しく聞こえますが、意味はシンプルです。</p>
+      <ul class="keylist">
+        <li><strong>解像度（1080pなど）</strong>＝画面のきめ細かさ。数字が大きいほど高画質。まずは <span class="term">フルHD（1080p）</span> を選んでおけば十分です。</li>
+        <li><strong>フレームレート（30fpsなど）</strong>＝1秒あたりの画像の枚数。パラパラ漫画のページ数のようなもので、多いほど動きがなめらかになります。標準は <span class="term">30fps前後</span>。</li>
+      </ul>
+      <div class="callout">迷ったら「フルHD・30fps」で始めれば、ほとんどの場面で問題ありません。</div>
+    </div>
+  </section>
+
+  <!-- ===== 編集の流れ ===== -->
+  <section id="workflow">
+    <span class="section-eyebrow">WORKFLOW</span>
+    <h2><span class="num">2</span>編集全体の流れ（ここが一番の学び）</h2>
+    <p>動画編集は、行き当たりばったりではなく<strong>決まった順番</strong>で進めると効率よく、きれいに仕上がります。この流れ自体が、どのソフトを使っても変わらない「実務の型」です。</p>
+
+    <div class="card">
+      <ol class="steps">
+        <li><strong>下準備（素材の整理）</strong><span>動画・画像・音楽などをフォルダーに分けて整理してから始めます。ここが散らかっていると、あとの作業が一気に大変になります。</span></li>
+        <li><strong>取り込み（読み込み）</strong><span>使う素材を編集ソフトの中に入れます。この時点ではまだ並べていません。「材料を台所に運び込む」段階です。</span></li>
+        <li><strong>カット</strong><span>いらない部分を切り、必要な部分だけを並べます。編集の骨組みをつくる、最も時間をかける工程です。</span></li>
+        <li><strong>テロップ（字幕・文字）</strong><span>話している内容を文字にしたり、強調したい言葉を目立たせたりします。視聴者の理解を助ける大事な要素です。</span></li>
+        <li><strong>色の補正</strong><span>映像を見やすく・きれいに整えます。全体の印象を大きく左右します。</span></li>
+        <li><strong>音の調整</strong><span>声・BGM・効果音の音量バランスを整えます。ここが雑だと、映像がよくても「素人っぽさ」が出ます。</span></li>
+        <li><strong>最終チェック</strong><span>少し時間を置いてから、誤字・タイミングのズレを確認します。頭をリセットしてから見るのがコツ。</span></li>
+        <li><strong>書き出し・共有</strong><span>1本の動画ファイルにまとめ、相手に渡します。</span></li>
+      </ol>
+    </div>
+    <div class="callout"><strong>覚えておきたい順番：</strong>整理 → 取り込み → カット → テロップ → 色 → 音 → チェック → 書き出し。この順番はソフトが変わっても同じです。</div>
+  </section>
+
+  <!-- ===== カット ===== -->
+  <section id="cut">
+    <span class="section-eyebrow">STEP · CUT</span>
+    <h2><span class="num">3</span>カット：骨組みをつくる</h2>
+    <p>カットは<strong>いらない部分を削り、見せたい部分だけを残す</strong>作業です。「間（ま）」や言い間違い、沈黙などを取り除くことで、テンポのよい動画になります。</p>
+
+    <div class="card">
+      <h3>「重ねる」という発想＝レイヤー</h3>
+      <p>タイムラインは、上下に段（トラック）が分かれています。映像は上の段、音は下の段。そして映像は<strong>何段も重ねる</strong>ことができます。</p>
+      <div class="analogy">
+        <span class="ic">📄</span>
+        <p><strong>たとえるなら「透明なシートの重ね合わせ」。</strong>上に置いたものが手前に見えます。人物映像の上にテロップや画像を重ねる、という考え方（<span class="term">レイヤー</span>）は、動画に限らず画像編集やデザインでも共通です。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>音の「波形」を見ながら切る</h3>
+      <p>音声には<strong>波形</strong>（音の大きさをギザギザで表したもの）が表示されます。声が出ているところは波が大きく、無音のところは平ら。この波を目印にすると、どこを切ればいいか一目でわかります。</p>
+      <div class="callout"><strong>共通のコツ：</strong>波形を大きく表示してから作業すると、切る場所が見つけやすくなります。無音や不要な部分は波形が教えてくれます。</div>
+    </div>
+  </section>
+
+  <!-- ===== テロップ ===== -->
+  <section id="telop">
+    <span class="section-eyebrow">STEP · TEXT</span>
+    <h2><span class="num">4</span>テロップ：伝わりやすさをつくる</h2>
+    <p>テロップ（画面上の文字）は動画の中でとても重要です。話の内容を目でも追えるようにし、大事な部分を強調して、<strong>視聴者が途中で離れないよう理解を助けます</strong>。</p>
+
+    <div class="card">
+      <h3>見切れを防ぐ「セーフマージン」</h3>
+      <p>スマホやテレビなど、見る機械によっては画面のふちが少し切れて表示されることがあります。<span class="term">セーフマージン</span>とは「どの機械でも確実に表示される安全な範囲」を示す枠のこと。</p>
+      <div class="analogy">
+        <span class="ic">🖼️</span>
+        <p><strong>たとえるなら「額縁の内側の線」。</strong>この線の内側に文字を収めておけば、どんな機械で見ても切れません。文字は絶対に見切れてはいけないので、必ず内側に配置します。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>「読みやすさ」を足す＝視認性</h3>
+      <p>白い服の人の上に白い文字を置くと、背景に溶けて読めません。この<strong>見やすさ（視認性）</strong>を上げる工夫は、どのソフトにもあります。</p>
+      <ul class="keylist">
+        <li><strong>フチ（縁取り）をつける</strong>：文字のまわりに黒い線を入れると、どんな背景でもくっきり読めます。太すぎず細すぎずが基本。</li>
+        <li><strong>太めのフォントを選ぶ</strong>：細い文字より、しっかり太い書体のほうが動画では読みやすくなります。</li>
+        <li><strong>影・背景色を足す</strong>：立体感を出したいときは影を、強調したいときは背景に色を敷きます。</li>
+      </ul>
+      <div class="callout"><strong>共通のコツ：</strong>一度きれいに作った文字デザインは「スタイル」として保存でき、次から使い回せます。毎回作り直さなくてよくなり、動画全体の見た目もそろいます。</div>
+    </div>
+  </section>
+
+  <!-- ===== 色の補正 ===== -->
+  <section id="color">
+    <span class="section-eyebrow">STEP · COLOR</span>
+    <h2><span class="num">5</span>色の補正：映像を見やすくする</h2>
+    <p>色の補正（<span class="term">カラーコレクション</span>）とは、<strong>映像を見やすく・きれいに整える</strong>ことです。補正の前後を比べると、白いものがより白く、肌の色が明るく、全体がぐっと締まって見えます。</p>
+
+    <div class="card">
+      <h3>「調整レイヤー」という便利な仕組み</h3>
+      <p>色の補正を1つ1つの映像にかけるのは大変ですし、動作も重くなります。そこで使うのが<span class="term">調整レイヤー</span>という「透明なシート」です。</p>
+      <div class="analogy">
+        <span class="ic">🎨</span>
+        <p><strong>たとえるなら「色つきの透明フィルム」。</strong>これを映像の上にかぶせると、下にあるすべての映像にまとめて同じ補正がかかります。1枚のフィルムを調整するだけで全体が整うので、効率的で軽いのです。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>まずは「自動補正」で十分</h3>
+      <p>多くのソフトには、ボタン1つで映像に合わせてきれいに整えてくれる<strong>自動補正</strong>機能があります。初心者はまずこれで整え、そこから明るさを少し足す程度で十分きれいになります。</p>
+      <div class="callout">演出として、あえて暗くして緊張感を出したり、青みを足して寒い雰囲気、黄色みを足して温かい雰囲気にする、といった調整もできます。色は「気持ち」を伝える道具でもあります。</div>
+    </div>
+  </section>
+
+  <!-- ===== 音の調整 ===== -->
+  <section id="audio">
+    <span class="section-eyebrow">STEP · AUDIO</span>
+    <h2><span class="num">6</span>音の調整：クオリティを底上げする</h2>
+    <p>音は動画の印象を大きく左右します。ここを整えるだけで、映像がそのままでも<strong>ぐっとプロっぽく</strong>なります。まずは3種類の音の役割を押さえましょう。</p>
+
+    <div class="card">
+      <h3>3種類の音の役割</h3>
+      <ul class="keylist">
+        <li><strong>声（ナレーション）</strong>：いちばん聞かせたい主役の音。</li>
+        <li><strong>BGM</strong>：動画全体の雰囲気をつくる背景の音楽。</li>
+        <li><strong>SE（効果音）</strong>：「ポン」「シュッ」など、動きや文字に合わせて足す音。</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>音量バランスの目安</h3>
+      <p>音の大きさは<strong>dB（デシベル）</strong>という単位で表します。数字がマイナスなのは「基準の0からどれだけ下げたか」を示すため。0に近いほど大きい音です。解説動画で紹介されていた目安は次のとおりです。</p>
+      <div class="ref-wrap">
+        <table class="ref">
+          <thead><tr><th>音の種類</th><th>目安の音量</th><th>ねらい</th></tr></thead>
+          <tbody>
+            <tr><td>声</td><td>約 −6 dB</td><td>いちばん大きく、はっきり聞こえるように</td></tr>
+            <tr><td>BGM</td><td>約 −25〜−30 dB</td><td>声を邪魔しないよう、かなり控えめに</td></tr>
+            <tr><td>SE（効果音）</td><td>約 −12〜−18 dB</td><td>声とBGMの中間くらい</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout"><strong>共通のコツ：</strong>細かい数値より「声を主役に、BGMはうんと小さく」という<strong>順番</strong>を覚えておけば十分です。この考え方はどのソフトでも変わりません。</div>
+    </div>
+
+    <div class="card">
+      <h3>知っておくと役立つ2つの言葉</h3>
+      <ul class="keylist">
+        <li><strong>リミッター（音量の上限）</strong>：大きすぎる音が飛び出さないよう、上限でフタをする仕組み。急に音が大きくなって耳が痛い、を防げます。</li>
+        <li><strong>ノーマライズ（音量そろえ）</strong>：素材ごとにバラバラな音量を、一定の大きさにそろえる機能。効果音の音量調整によく使います。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 書き出し ===== -->
+  <section id="export">
+    <span class="section-eyebrow">STEP · EXPORT</span>
+    <h2><span class="num">7</span>書き出しと共有：1本にまとめる</h2>
+    <p>編集が終わったら、バラバラの素材を<strong>1本の動画ファイル</strong>にまとめます。これを<span class="term">書き出し（エクスポート／レンダリング）</span>と呼びます。</p>
+
+    <div class="card">
+      <h3>書き出す前に「最終チェック」</h3>
+      <p>完成した気になってすぐ書き出すのではなく、いったん手を止めます。<strong>10〜20分ほど時間を置いてから見直す</strong>と、作業中には気づけなかったミスが見つかります。</p>
+      <ul class="keylist">
+        <li><strong>誤字・脱字</strong>：テロップの文字は特に見落としがち。</li>
+        <li><strong>クリップのズレ</strong>：映像と文字のタイミングが1コマずれるだけでも、テンポが崩れます。再生して確認を。</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>目的に合わせた書き出し設定</h3>
+      <ul class="keylist">
+        <li><strong>横長（YouTubeなど）</strong>：フルHD（1080p）の標準設定でOK。</li>
+        <li><strong>縦長（ショート・リールなど）</strong>：縦向きの設定を選ばないと、横向きで書き出されてしまうので注意。</li>
+      </ul>
+      <div class="callout"><strong>共通のコツ：</strong>どのソフトにも「YouTube用」「SNS用」といった<strong>プリセット（おすすめ設定）</strong>が用意されています。まずはそれを選べば失敗しません。仕上げたファイルは、大容量ファイル転送サービスなどで相手に共有します。</div>
+    </div>
+  </section>
+
+  <!-- ===== 用語の対応表 ===== -->
+  <section id="map">
+    <span class="section-eyebrow">GLOSSARY</span>
+    <h2><span class="num">8</span>用語の対応表：呼び名が違うだけ</h2>
+    <p>Premiere特有の言葉も、実は他のソフトに同じ機能があります。「呼び名が違うだけ」と分かれば、どのソフトを触っても迷いません。</p>
+    <div class="map-wrap">
+      <table class="map">
+        <thead><tr><th>この動画（Premiere）での呼び名</th><th>意味・他ソフトでの位置づけ</th></tr></thead>
+        <tbody>
+          <tr><td>プロジェクト</td><td>作業ファイルの入れ物。どのソフトにもある「新規作成」の単位。</td></tr>
+          <tr><td>シーケンス</td><td>完成動画の設計図。多くのソフトでは「タイムライン」とほぼ同じ意味で使われる。</td></tr>
+          <tr><td>クリップ</td><td>タイムラインに置いた素材1つ1つ。呼び名はほぼ共通。</td></tr>
+          <tr><td>レイヤー（V1・V2…）</td><td>重ねる段。画像編集ソフトのレイヤーと同じ発想。</td></tr>
+          <tr><td>ルメトリーカラー</td><td>色補正パネルのPremiere固有の名前。他ソフトでは「カラー」「色調整」など。</td></tr>
+          <tr><td>調整レイヤー</td><td>まとめて効果をかける透明シート。多くのソフトに同等機能あり。</td></tr>
+          <tr><td>ビン（bin）</td><td>ソフト内の「フォルダー」のこと。中身は普通のフォルダーと同じ。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== 無料で始める ===== -->
+  <section id="free">
+    <span class="section-eyebrow">GET STARTED</span>
+    <h2><span class="num">9</span>ソフトがなくても、今すぐ始められる</h2>
+    <p>ここまでの考え方は、<strong>無料のソフトでもそのまま実践できます</strong>。Premiereを買わなくても、動画編集は今日から始められます。目的に合わせて選んでみてください。</p>
+
+    <div class="tools">
+      <div class="tool">
+        <span class="tag">スマホ・PC / 無料</span>
+        <h4>CapCut</h4>
+        <p>いちばん手軽。カット・テロップ・BGM・自動字幕まで直感的にできます。まず1本作ってみるならこれ。この資料の「カット→テロップ→音」の流れがそのまま試せます。</p>
+      </div>
+      <div class="tool">
+        <span class="tag">PC / 無料</span>
+        <h4>DaVinci Resolve</h4>
+        <p>プロも使う本格ソフトの無料版。色補正がとても強力で、「調整レイヤー」「カラー」の考え方をしっかり学べます。少し重いので余裕のあるPC向け。</p>
+      </div>
+      <div class="tool">
+        <span class="tag">ブラウザ / 無料〜</span>
+        <h4>Canva</h4>
+        <p>ふだんの資料づくりの延長で動画編集ができます。テロップやテンプレートが豊富で、SNS向けの縦型動画も簡単。デザイン重視の人に。</p>
+      </div>
+      <div class="tool">
+        <span class="tag">Windows・Mac / 標準</span>
+        <h4>フォト／iMovie</h4>
+        <p>PCに最初から入っている無料ソフト。まずは「素材を並べてカットして書き出す」という基本の流れを体験するのにぴったりです。</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:22px;">
+      <strong>おすすめの一歩：</strong>まずはCapCutかCanvaで、10秒でもいいので1本作って書き出してみましょう。「取り込み→カット→テロップ→音→書き出し」という<strong>流れを一度体験する</strong>ことが、どんな解説を読むより理解につながります。
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p><strong>DX COURSE</strong> ｜ 動画編集の基礎まとめ</p>
+  <p>この資料は解説動画から「ソフトに依存しない考え方」を抜き出して再構成したものです。<br>操作の細部はソフトごとに異なりますが、ここで学んだ「流れ」と「用語」はどこでも通用します。</p>
+</footer>
+
+</body>
+</html>
