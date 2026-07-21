@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あさひ先生の誰でもCanvaでなんとなくカッコいいショート動画を作っちゃおう講座 第3回</title>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF9EF;
+  --ink:#3A3532;
+  --yellow:#FFC93C;
+  --coral:#FF6B6B;
+  --teal:#2EC4B6;
+  --purple:#8A6FC7;
+  --white:#FFFFFF;
+  --line:#3A3532;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'M PLUS Rounded 1c',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.9;
+  font-size:16px;
+}
+
+/* ===== ヘッダー ===== */
+.hero{
+  text-align:center;
+  padding:56px 20px 40px;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255,201,60,.35) 0 60px, transparent 61px),
+    radial-gradient(circle at 88% 30%, rgba(46,196,182,.28) 0 50px, transparent 51px),
+    radial-gradient(circle at 20% 85%, rgba(255,107,107,.25) 0 45px, transparent 46px),
+    radial-gradient(circle at 80% 80%, rgba(138,111,199,.22) 0 55px, transparent 56px),
+    var(--white);
+  border-bottom:3px solid var(--line);
+}
+.hero .kicker{
+  display:inline-block;
+  background:var(--ink);
+  color:var(--yellow);
+  font-weight:700;
+  padding:4px 18px;
+  border-radius:999px;
+  font-size:14px;
+  letter-spacing:.08em;
+  margin-bottom:16px;
+}
+.hero h1{
+  font-weight:800;
+  font-size:clamp(22px,4.5vw,34px);
+  line-height:1.6;
+  max-width:720px;
+  margin:0 auto;
+}
+.hero h1 .marker{
+  background:linear-gradient(transparent 62%, var(--yellow) 62%);
+  padding:0 2px;
+}
+.hero p{
+  margin-top:16px;
+  font-weight:500;
+  color:#6B625C;
+}
+.hero .badges{
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.hero .badge{
+  background:var(--white);
+  border:2px solid var(--line);
+  border-radius:999px;
+  padding:6px 16px;
+  font-weight:700;
+  font-size:14px;
+  box-shadow:3px 3px 0 var(--line);
+}
+
+/* ===== 今日つくるもの ===== */
+.goal{
+  max-width:760px;
+  margin:36px auto 0;
+  padding:0 20px;
+}
+.goal-card{
+  background:var(--white);
+  border:3px solid var(--line);
+  border-radius:20px;
+  box-shadow:6px 6px 0 var(--teal);
+  padding:28px 26px;
+  text-align:center;
+}
+.goal-card .goal-img{
+  width:min(260px,80%);
+  height:auto;
+  border-radius:14px;
+}
+.goal-card h2{
+  font-size:20px;
+  font-weight:800;
+  margin:8px 0 6px;
+}
+.goal-card p{font-weight:500;}
+
+/* ===== メニュー ===== */
+.menu{
+  max-width:760px;
+  margin:28px auto 0;
+  padding:0 20px;
+}
+.menu-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  list-style:none;
+}
+.menu-list a{
+  display:inline-block;
+  text-decoration:none;
+  color:var(--ink);
+  background:var(--white);
+  border:2px solid var(--line);
+  border-radius:999px;
+  padding:6px 14px;
+  font-weight:700;
+  font-size:13px;
+  transition:transform .15s;
+}
+.menu-list a:hover{transform:translateY(-3px);}
+.menu-list a:focus-visible{outline:3px solid var(--coral);outline-offset:2px;}
+
+/* ===== セクション ===== */
+main{
+  max-width:760px;
+  margin:0 auto;
+  padding:24px 20px 60px;
+}
+section{margin-top:48px;}
+.sec-head{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:18px;
+}
+.sec-num{
+  flex-shrink:0;
+  width:52px;height:52px;
+  border-radius:50%;
+  border:3px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:22px;
+  background:var(--yellow);
+  box-shadow:3px 3px 0 var(--line);
+}
+section:nth-of-type(2) .sec-num{background:var(--coral);color:var(--white);}
+section:nth-of-type(3) .sec-num{background:var(--teal);color:var(--white);}
+section:nth-of-type(4) .sec-num{background:var(--purple);color:var(--white);}
+section:nth-of-type(5) .sec-num{background:var(--yellow);}
+section:nth-of-type(6) .sec-num{background:var(--coral);color:var(--white);}
+section:nth-of-type(7) .sec-num{background:var(--teal);color:var(--white);}
+.sec-head h2{
+  font-size:clamp(19px,3.5vw,24px);
+  font-weight:800;
+}
+.sec-head .sub{
+  display:block;
+  font-size:14px;
+  font-weight:500;
+  color:#6B625C;
+}
+
+/* ===== ステップカード ===== */
+.step{
+  background:var(--white);
+  border:2px solid var(--line);
+  border-radius:16px;
+  padding:16px 18px;
+  margin-bottom:12px;
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  box-shadow:3px 3px 0 rgba(58,53,50,.15);
+}
+.step .s-num{
+  flex-shrink:0;
+  margin-top:3px;
+  width:28px;height:28px;
+  border-radius:50%;
+  background:var(--ink);
+  color:var(--white);
+  font-weight:700;
+  font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+}
+.step p{font-weight:500;}
+.step .path{
+  display:inline-block;
+  background:#F2EDE4;
+  border-radius:6px;
+  padding:1px 8px;
+  font-weight:700;
+  font-size:14px;
+  margin:0 2px;
+  white-space:nowrap;
+}
+.step .small{
+  display:block;
+  font-size:14px;
+  color:#6B625C;
+  margin-top:4px;
+}
+
+/* ===== ポイント・注意ボックス ===== */
+.tip{
+  border:2px dashed var(--teal);
+  background:#EDFAF8;
+  border-radius:14px;
+  padding:14px 18px;
+  margin:12px 0;
+  font-weight:500;
+  font-size:15px;
+}
+.tip strong{color:#178F82;}
+.caution{
+  border:2px dashed var(--coral);
+  background:#FFF0F0;
+  border-radius:14px;
+  padding:14px 18px;
+  margin:12px 0;
+  font-weight:500;
+  font-size:15px;
+}
+.caution strong{color:#E04848;}
+
+/* ===== AIプロンプト吹き出し ===== */
+.prompt-box{
+  background:var(--ink);
+  color:#FFF6E0;
+  border-radius:16px;
+  padding:18px 20px;
+  margin:12px 0;
+  position:relative;
+  font-weight:500;
+  font-size:15px;
+}
+.prompt-box::before{
+  content:"";
+  position:absolute;
+  top:-12px;left:34px;
+  border:8px solid transparent;
+  border-bottom:12px solid var(--ink);
+  border-top:0;
+}
+.prompt-box .label{
+  display:inline-block;
+  background:var(--yellow);
+  color:var(--ink);
+  font-weight:800;
+  font-size:12px;
+  border-radius:999px;
+  padding:2px 12px;
+  margin-bottom:8px;
+}
+
+/* ===== ラストの締め ===== */
+.finale{
+  margin-top:56px;
+  text-align:center;
+  background:var(--white);
+  border:3px solid var(--line);
+  border-radius:24px;
+  box-shadow:6px 6px 0 var(--coral);
+  padding:40px 24px;
+}
+.finale .emoji{font-size:44px;}
+.finale h2{
+  font-size:clamp(20px,4vw,26px);
+  font-weight:800;
+  margin:10px 0 12px;
+}
+.finale p{font-weight:500;max-width:520px;margin:0 auto;}
+.finale .loop{
+  display:inline-block;
+  margin-top:18px;
+  background:var(--yellow);
+  border:2px solid var(--line);
+  border-radius:999px;
+  padding:8px 22px;
+  font-weight:800;
+  box-shadow:3px 3px 0 var(--line);
+}
+
+footer{
+  text-align:center;
+  padding:24px 20px 40px;
+  font-size:13px;
+  color:#8A817A;
+  font-weight:500;
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  .menu-list a{transition:none;}
+}
+@media (max-width:480px){
+  body{font-size:15px;}
+  .step{padding:14px 14px;}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="kicker">🎬 あさひ先生のDX講座 第3回</span>
+  <h1>誰でもCanvaで<br><span class="marker">なんとなくカッコいい</span><br>ショート動画を作っちゃおう講座</h1>
+  <p>今回はテキストの動きに挑戦！気楽にいきましょう🎵</p>
+</header>
+
+<div class="goal">
+  <div class="goal-card">
+    <div class="emoji">🌿📖✨</div>
+    <h2>今日つくるもの</h2>
+    <p>風景に名言を乗せた、じんわり心にしみる<br><strong>癒しのショート動画</strong>をつくります！</p>
+  </div>
+</div>
+
+<nav class="menu" aria-label="目次">
+  <ul class="menu-list">
+    <li><a href="#sec1">① 前準備</a></li>
+    <li><a href="#sec2">② BGM選び</a></li>
+    <li><a href="#sec3">③ 風景素材</a></li>
+    <li><a href="#sec4">④ 名言を考える</a></li>
+    <li><a href="#sec5">⑤ 名言を乗せる</a></li>
+    <li><a href="#sec6">⑥ 音の仕上げ</a></li>
+    <li><a href="#sec7">⑦ もう1回！</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ① 前準備 -->
+<section id="sec1">
+  <div class="sec-head">
+    <div class="sec-num">1</div>
+    <h2>まずは前準備<span class="sub">ファイルを作るところから！</span></h2>
+  </div>
+  <div class="step"><div class="s-num">1</div><p>自分の名前のフォルダページを開く<span class="small">ブックマークしておこう</span></p></div>
+  <div class="step"><div class="s-num">2</div><p><span class="path">新しく追加</span>＞<span class="path">デザイン</span>＞<span class="path">新規作成</span>をクリック。<span class="path">動画</span>から<span class="path">YouTube動画</span>をクリック</p></div>
+  <div class="step"><div class="s-num">3</div><p>ファイル名を「自分のフルネーム 練習3」と入力する</p></div>
+  <div class="tip">💡 これで前準備は完了！ここから作っていきます🙌</div>
+</section>
+
+<!-- ② BGM -->
+<section id="sec2">
+  <div class="sec-head">
+    <div class="sec-num">2</div>
+    <h2>BGMを選ぼう<span class="sub">静かな曲で癒しの雰囲気に</span></h2>
+  </div>
+  <div class="tip">💡 今回は落ち着いた雰囲気にしたいので、静かで邪魔しない曲を選びます🎵</div>
+  <div class="step"><div class="s-num">1</div><p>左のメニューから<span class="path">素材</span>をクリックして、<span class="path">オーディオ</span>をクリック</p></div>
+  <div class="step"><div class="s-num">2</div><p>「アンビエント」と検索する</p></div>
+  <div class="step"><div class="s-num">3</div><p>「Carried By Waves」という音楽をクリックして、タイムラインに入れる</p></div>
+</section>
+
+<!-- ③ 風景素材 -->
+<section id="sec3">
+  <div class="sec-head">
+    <div class="sec-num">3</div>
+    <h2>風景素材を集めよう<span class="sub">静かな景色を選ぶのがコツ</span></h2>
+  </div>
+  <div class="step"><div class="s-num">1</div><p>左のメニューから<span class="path">素材</span>をクリック</p></div>
+  <div class="caution">⚠️ <strong>注意！</strong> さっき素材＞オーディオで検索したので、オーディオの画面になっているかも。左上の<span class="path">←オーディオ</span>をクリックして前の画面に戻ろう</div>
+  <div class="step"><div class="s-num">2</div><p><span class="path">動画</span>をクリックして「自然」「空」「海」「山」などで検索。風景の動画素材を<strong>4つ</strong>選ぶ</p></div>
+  <div class="step"><div class="s-num">3</div><p>1つ選ぶごとに、動画の長さを<strong>5秒</strong>にする。4つとも5秒<span class="small">素材を左クリックして、ハサミマークをクリック</span></p></div>
+  <div class="tip">💡 名言の文字を読みやすくするため、<strong>動きの少ない静かな風景</strong>を選ぶのがおすすめ🌿</div>
+</section>
+
+<!-- ④ 名言を考える -->
+<section id="sec4">
+  <div class="sec-head">
+    <div class="sec-num">4</div>
+    <h2>名言を考えよう<span class="sub">AIと一緒に4つ作る</span></h2>
+  </div>
+  <div class="step"><div class="s-num">1</div><p>動画に乗せる名言を、AIを使って4つ考えよう</p></div>
+  <div class="prompt-box">
+    <span class="label">🤖 AIへの頼み方（例）</span><br>
+    短くて前向きな名言を4つ考えて。日本語で。15文字以内で。
+  </div>
+  <div class="tip">💡 文字数を指定すると、画面に収まりやすい長さで返ってくるよ✨</div>
+</section>
+
+<!-- ⑤ 名言を乗せる -->
+<section id="sec5">
+  <div class="sec-head">
+    <div class="sec-num">5</div>
+    <h2>名言を乗せよう<span class="sub">テキストの動きが今日の主役！</span></h2>
+  </div>
+  <div class="step"><div class="s-num">1</div><p>1つ目の風景をクリックしてから、左のメニューから<span class="path">テキスト</span>をクリック。<span class="path">見出しを追加</span>をクリック</p></div>
+  <div class="step"><div class="s-num">2</div><p>1つ目の名言を入力する。フォントサイズを<strong>80</strong>にして、中央に配置する</p></div>
+  <div class="tip">💡 フォントも選んでみよう。癒し系なら明朝体（Noto Serif JPなど）が合うよ✒️</div>
+  <div class="step"><div class="s-num">3</div><p>名言をクリックして、<span class="path">アニメーション</span>をクリック。好きな動きを選ぶ<span class="small">フェード、タイプ、スライドなど、名言に合う動きを探してみよう</span></p></div>
+  <div class="step"><div class="s-num">4</div><p>同じように、2〜4つ目の風景にも名言を乗せる<span class="small">それぞれ違うアニメーションを試して、印象の違いを見てみよう</span></p></div>
+  <div class="tip">💡 背景が明るくて文字が見えにくいときは、<span class="path">エフェクト</span>や文字色を変更すると読みやすくなるよ📖</div>
+</section>
+
+<!-- ⑥ 音の仕上げ -->
+<section id="sec6">
+  <div class="sec-head">
+    <div class="sec-num">6</div>
+    <h2>音を仕上げよう<span class="sub">最後にそっと余韻を残す</span></h2>
+  </div>
+  <div class="step"><div class="s-num">1</div><p>タイムラインに入れたアンビエントの音楽をクリックして、<span class="path">フェード</span>をクリック。フェードアウトを<strong>1秒</strong>にする</p></div>
+  <div class="step"><div class="s-num">2</div><p>右上の<span class="path">プレビュー</span>を押して確認する<span class="small">読み込みが上手くいかないときはページを再読み込みしよう</span></p></div>
+  <div class="tip">🎉 <strong>完成！</strong> じんわり心にしみる動画になってるはず🌿</div>
+</section>
+
+<!-- ⑦ もう1回 -->
+<section id="sec7">
+  <div class="finale">
+    <div class="emoji">🔁✨</div>
+    <h2>ラストステップ：もう1回やってみよう！</h2>
+    <p>もう一度最初のステップから始めて、内容をアレンジしてみよう。<br>自分好みの曲やテーマにしてみよう。<br>2回目は、きっともっと自由に作れるよ🎵</p>
+    <a class="loop" href="#sec1">▶ 最初のステップに戻る</a>
+  </div>
+</section>
+
+</main>
+
+<footer>あさひ先生のDX講座｜Canvaショート動画編 第3回</footer>
+
+</body>
+</html>
