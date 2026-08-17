@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あさひ先生の誰でもCanvaでなんとなくカッコいいお店のデザインを作っちゃおう講座 第1回 ロゴ</title>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF9EF;
+  --ink:#3A3532;
+  --yellow:#FFC93C;
+  --coral:#FF6B6B;
+  --teal:#2EC4B6;
+  --purple:#8A6FC7;
+  --white:#FFFFFF;
+  --line:#3A3532;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'M PLUS Rounded 1c',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.9;
+  font-size:16px;
+}
+
+/* ===== ヘッダー ===== */
+.hero{
+  text-align:center;
+  padding:56px 20px 40px;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255,201,60,.35) 0 60px, transparent 61px),
+    radial-gradient(circle at 88% 30%, rgba(46,196,182,.28) 0 50px, transparent 51px),
+    radial-gradient(circle at 20% 85%, rgba(255,107,107,.25) 0 45px, transparent 46px),
+    radial-gradient(circle at 80% 80%, rgba(138,111,199,.22) 0 55px, transparent 56px),
+    var(--white);
+  border-bottom:3px solid var(--line);
+}
+.hero .kicker{
+  display:inline-block;
+  background:var(--ink);
+  color:var(--yellow);
+  font-weight:700;
+  padding:4px 18px;
+  border-radius:999px;
+  font-size:14px;
+  letter-spacing:.08em;
+  margin-bottom:16px;
+}
+.hero h1{
+  font-weight:800;
+  font-size:clamp(22px,4.5vw,34px);
+  line-height:1.6;
+  max-width:720px;
+  margin:0 auto;
+}
+.hero h1 .marker{
+  background:linear-gradient(transparent 62%, var(--yellow) 62%);
+  padding:0 2px;
+}
+.hero p{
+  margin-top:16px;
+  font-weight:500;
+  color:#6B625C;
+}
+.hero .badges{
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.hero .badge{
+  background:var(--white);
+  border:2px solid var(--line);
+  border-radius:999px;
+  padding:6px 16px;
+  font-weight:700;
+  font-size:14px;
+  box-shadow:3px 3px 0 var(--line);
+}
+
+/* ===== 今日つくるもの ===== */
+.goal{
+  max-width:760px;
+  margin:36px auto 0;
+  padding:0 20px;
+}
+.goal-card{
+  background:var(--white);
+  border:3px solid var(--line);
+  border-radius:20px;
+  box-shadow:6px 6px 0 var(--teal);
+  padding:28px 26px;
+  text-align:center;
+}
+.goal-card .goal-img{
+  width:min(260px,80%);
+  height:auto;
+  border-radius:14px;
+}
+.goal-card .emoji{
+  font-size:44px;
+  line-height:1.3;
+}
+.goal-card h2{
+  font-size:20px;
+  font-weight:800;
+  margin:8px 0 6px;
+}
+.goal-card p{font-weight:500;}
+
+/* ===== メニュー ===== */
+.menu{
+  max-width:760px;
+  margin:28px auto 0;
+  padding:0 20px;
+}
+.menu-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  list-style:none;
+}
+.menu-list a{
+  display:inline-block;
+  text-decoration:none;
+  color:var(--ink);
+  background:var(--white);
+  border:2px solid var(--line);
+  border-radius:999px;
+  padding:6px 14px;
+  font-weight:700;
+  font-size:13px;
+  transition:transform .15s;
+}
+.menu-list a:hover{transform:translateY(-3px);}
+.menu-list a:focus-visible{outline:3px solid var(--coral);outline-offset:2px;}
+
+/* ===== セクション ===== */
+main{
+  max-width:760px;
+  margin:0 auto;
+  padding:24px 20px 60px;
+}
+section{margin-top:48px;}
+.sec-head{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:18px;
+}
+.sec-num{
+  flex-shrink:0;
+  width:52px;height:52px;
+  border-radius:50%;
+  border:3px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:22px;
+  background:var(--yellow);
+  box-shadow:3px 3px 0 var(--line);
+}
+section:nth-of-type(2) .sec-num{background:var(--coral);color:var(--white);}
+section:nth-of-type(3) .sec-num{background:var(--teal);color:var(--white);}
+section:nth-of-type(4) .sec-num{background:var(--purple);color:var(--white);}
+section:nth-of-type(5) .sec-num{background:var(--yellow);}
+section:nth-of-type(6) .sec-num{background:var(--coral);color:var(--white);}
+section:nth-of-type(7) .sec-num{background:var(--teal);color:var(--white);}
+.sec-head h2{
+  font-size:clamp(19px,3.5vw,24px);
+  font-weight:800;
+}
+.sec-head .sub{
+  display:block;
+  font-size:14px;
+  font-weight:500;
+  color:#6B625C;
+}
+
+/* ===== ステップカード ===== */
+.step{
+  background:var(--white);
+  border:2px solid var(--line);
+  border-radius:16px;
+  padding:16px 18px;
+  margin-bottom:12px;
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  box-shadow:3px 3px 0 rgba(58,53,50,.15);
+}
+.step .s-num{
+  flex-shrink:0;
+  margin-top:3px;
+  width:28px;height:28px;
+  border-radius:50%;
+  background:var(--ink);
+  color:var(--white);
+  font-weight:700;
+  font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+}
+.step p{font-weight:500;}
+.step .path{
+  display:inline-block;
+  background:#F2EDE4;
+  border-radius:6px;
+  padding:1px 8px;
+  font-weight:700;
+  font-size:14px;
+  margin:0 2px;
+  white-space:nowrap;
+}
+.step .small{
+  display:block;
+  font-size:14px;
+  color:#6B625C;
+  margin-top:4px;
+}
+
+/* ===== テンプレートを開くリンク ===== */
+.tlink{
+  display:inline-block;
+  margin-top:8px;
+  background:var(--teal);
+  color:var(--white);
+  text-decoration:none;
+  border:2px solid var(--line);
+  border-radius:999px;
+  padding:3px 16px;
+  font-weight:800;
+  font-size:14px;
+  box-shadow:2px 2px 0 var(--line);
+}
+.tlink:hover{transform:translateY(-2px);}
+.tlink:focus-visible{outline:3px solid var(--coral);outline-offset:2px;}
+
+/* ===== ポイント・注意ボックス ===== */
+.tip{
+  border:2px dashed var(--teal);
+  background:#EDFAF8;
+  border-radius:14px;
+  padding:14px 18px;
+  margin:12px 0;
+  font-weight:500;
+  font-size:15px;
+}
+.tip strong{color:#178F82;}
+.caution{
+  border:2px dashed var(--coral);
+  background:#FFF0F0;
+  border-radius:14px;
+  padding:14px 18px;
+  margin:12px 0;
+  font-weight:500;
+  font-size:15px;
+}
+.caution strong{color:#E04848;}
+
+/* ===== AIプロンプト吹き出し ===== */
+.prompt-box{
+  background:var(--ink);
+  color:#FFF6E0;
+  border-radius:16px;
+  padding:18px 20px;
+  margin:12px 0;
+  position:relative;
+  font-weight:500;
+  font-size:15px;
+}
+.prompt-box::before{
+  content:"";
+  position:absolute;
+  top:-12px;left:34px;
+  border:8px solid transparent;
+  border-bottom:12px solid var(--ink);
+  border-top:0;
+}
+.prompt-box .label{
+  display:inline-block;
+  background:var(--yellow);
+  color:var(--ink);
+  font-weight:800;
+  font-size:12px;
+  border-radius:999px;
+  padding:2px 12px;
+}
+.prompt-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:8px;
+}
+.copy-btn{
+  font-family:inherit;
+  background:var(--white);
+  color:var(--ink);
+  border:2px solid var(--ink);
+  border-radius:999px;
+  padding:2px 14px;
+  font-weight:800;
+  font-size:12px;
+  cursor:pointer;
+}
+.copy-btn:hover{background:var(--yellow);}
+.copy-btn:focus-visible{outline:3px solid var(--coral);outline-offset:2px;}
+
+/* ===== ラストの締め ===== */
+.finale{
+  margin-top:56px;
+  text-align:center;
+  background:var(--white);
+  border:3px solid var(--line);
+  border-radius:24px;
+  box-shadow:6px 6px 0 var(--coral);
+  padding:40px 24px;
+}
+.finale .emoji{font-size:44px;}
+.finale h2{
+  font-size:clamp(20px,4vw,26px);
+  font-weight:800;
+  margin:10px 0 12px;
+}
+.finale p{font-weight:500;max-width:520px;margin:0 auto;}
+.finale .loop{
+  display:inline-block;
+  margin-top:18px;
+  background:var(--yellow);
+  border:2px solid var(--line);
+  border-radius:999px;
+  padding:8px 22px;
+  font-weight:800;
+  box-shadow:3px 3px 0 var(--line);
+  text-decoration:none;
+  color:var(--ink);
+}
+
+footer{
+  text-align:center;
+  padding:24px 20px 40px;
+  font-size:13px;
+  color:#8A817A;
+  font-weight:500;
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  .menu-list a{transition:none;}
+}
+@media (max-width:480px){
+  body{font-size:15px;}
+  .step{padding:14px 14px;}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="kicker">🎨 あさひ先生のDX講座 第1回</span>
+  <h1>誰でもCanvaで<br><span class="marker">なんとなくカッコいい</span><br>お店のデザインを作っちゃおう講座</h1>
+  <p>3回でロゴ・名刺・チラシが揃います。気楽にいきましょう🍓</p>
+</header>
+
+<div class="goal">
+  <div class="goal-card">
+    <div class="emoji">🍓🥞✨</div>
+    <h2>今日つくるもの</h2>
+    <p>苺を使った手作りクレープ屋さんの<br><strong>ロゴ</strong>をつくります！</p>
+  </div>
+</div>
+
+<nav class="menu" aria-label="目次">
+  <ul class="menu-list">
+    <li><a href="#sec1">① 店名を決める</a></li>
+    <li><a href="#sec2">② テンプレート</a></li>
+    <li><a href="#sec3">③ 移動と名前変更</a></li>
+    <li><a href="#sec4">④ 店名を入れる</a></li>
+    <li><a href="#sec5">⑤ ロゴタイプ</a></li>
+    <li><a href="#sec6">⑥ ダウンロード</a></li>
+    <li><a href="#sec7">⑦ 完成！</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ① 店名を決める -->
+<section id="sec1">
+  <div class="sec-head">
+    <div class="sec-num">1</div>
+    <h2>まずはお店の名前を決めよう<span class="sub">AIに候補を出してもらいます</span></h2>
+  </div>
+  <div class="tip">💡 ここで決めた名前は、ロゴ・名刺・チラシの<strong>3回とも</strong>使います。じっくり選んでOK🍓</div>
+  <div class="step"><div class="s-num">1</div><p>Geminiを開く<br>
+    <a class="tlink" href="https://gemini.google.com/" target="_blank" rel="noopener">▶ Geminiを開く</a></p></div>
+  <div class="step"><div class="s-num">2</div><p>下のようにお願いして、店名の候補を出してもらう<span class="small">下の「📋 コピー」ボタンを押して、Geminiに貼り付けよう</span></p></div>
+  <div class="prompt-box">
+    <div class="prompt-head">
+      <span class="label">🤖 AIへの頼み方</span>
+      <button class="copy-btn" type="button">📋 コピー</button>
+    </div>
+    <p class="prompt-text">手作りクレープ屋さんの店舗名の案を5つ考えて欲しい。アルファベット表記で8文字以内。</p>
+  </div>
+  <div class="step"><div class="s-num">3</div><p>出てきた5つの中から、好きなものを<strong>1つ</strong>選ぶ<span class="small">ピンとこなければ、もう一度お願いして出し直してもOK</span></p></div>
+</section>
+
+<!-- ② テンプレート -->
+<section id="sec2">
+  <div class="sec-head">
+    <div class="sec-num">2</div>
+    <h2>テンプレートを選ぼう<span class="sub">プロのデザインを借りちゃおう</span></h2>
+  </div>
+  <div class="step"><div class="s-num">1</div><p>Canvaのホーム画面の<span class="path">テンプレート</span>をクリックしてから、検索窓に「<strong>クレープ</strong>」と入力して検索</p></div>
+  <div class="step"><div class="s-num">2</div><p><span class="path">カテゴリー</span>から<span class="path">ロゴ</span>を選ぶ<span class="small">これでロゴのテンプレートだけが表示されます</span></p></div>
+  <div class="step"><div class="s-num">3</div><p>テンプレートを見つけてクリックし、<span class="path">このテンプレートをカスタマイズ</span>をクリック<br>
+    <a class="tlink" href="https://www.canva.com/templates/EAGfvSDJYVE/" target="_blank" rel="noopener">▶ 今日使うテンプレートを開く</a></p></div>
+</section>
+
+<!-- ③ 移動と名前変更 -->
+<section id="sec3">
+  <div class="sec-head">
+    <div class="sec-num">3</div>
+    <h2>フォルダ移動と名前変更<span class="sub">今日いちばん大事なところ！</span></h2>
+  </div>
+  <div class="caution">⚠️ <strong>必ずやろう！</strong> ここを飛ばすと、あとで自分のデザインが見つからなくなります</div>
+  <div class="step"><div class="s-num">1</div><p>画面右上のファイル名をクリックして、<strong>「自分の名前　ロゴ」</strong>に変更する</p></div>
+  <div class="step"><div class="s-num">2</div><p>左上の<span class="path">ファイル</span>をクリックして、<span class="path">フォルダに移動</span>をクリック</p></div>
+  <div class="step"><div class="s-num">3</div><p>自分の名前のフォルダを検索し、選んで<span class="path">移動</span>をクリック</p></div>
+  <div class="tip">💡 これは名刺・チラシのときも<strong>毎回</strong>やる作業です。手順を覚えちゃおう🙌</div>
+</section>
+
+<!-- ④ 店名を入れる -->
+<section id="sec4">
+  <div class="sec-head">
+    <div class="sec-num">4</div>
+    <h2>店名を書き換えよう<span class="sub">いよいよ自分のお店に！</span></h2>
+  </div>
+  <div class="step"><div class="s-num">1</div><p>テンプレートに入っている店名の文字をダブルクリックする</p></div>
+  <div class="step"><div class="s-num">2</div><p>①で決めた店名を入力する</p></div>
+  <div class="step"><div class="s-num">3</div><p>マウスでロゴ全体を囲むようにドラッグして選択し、<span class="path">グループ化</span>をクリック<span class="small">バラバラにならず、まとめて動かせるようになります</span></p></div>
+</section>
+
+<!-- ⑤ ロゴタイプ -->
+<section id="sec5">
+  <div class="sec-head">
+    <div class="sec-num">5</div>
+    <h2>ロゴタイプを作ろう<span class="sub">エフェクトとブランドカラーで仕上げ</span></h2>
+  </div>
+  <div class="step"><div class="s-num">1</div><p>左のメニューから<span class="path">テキスト</span>をクリックして、<span class="path">見出しを追加</span>をクリック。ロゴの下の余白に置く</p></div>
+  <div class="step"><div class="s-num">2</div><p>①で決めた店名を入力する</p></div>
+  <div class="step"><div class="s-num">3</div><p>入力した店名をクリックして、<span class="path">エフェクト</span>から<strong>バブル</strong>を選ぶ</p></div>
+  <div class="step"><div class="s-num">4</div><p>上のメニューの<span class="path">テキストの色</span>をクリックして「クリムゾン」と検索。<span class="path">ブランドカラー</span>に出てくる<strong>ビビットクリムゾン</strong>を選ぶ</p></div>
+  <div class="step"><div class="s-num">5</div><p>袋文字になっている<strong>枠線の色を白</strong>に変更する<span class="small">文字のまわりを囲んでいる線のことです</span></p></div>
+</section>
+
+<!-- ⑥ ダウンロード -->
+<section id="sec6">
+  <div class="sec-head">
+    <div class="sec-num">6</div>
+    <h2>ダウンロードして保存<span class="sub">作ったロゴを手元にも残そう</span></h2>
+  </div>
+  <div class="step"><div class="s-num">1</div><p>右上の<span class="path">共有</span>をクリックして、<span class="path">ダウンロード</span>をクリック</p></div>
+  <div class="step"><div class="s-num">2</div><p>ファイルの種類を<strong>PNG</strong>にする</p></div>
+  <div class="step"><div class="s-num">3</div><p><span class="path">ダウンロード</span>ボタンを押して保存する<span class="small">保存先はデスクトップなど、自分が分かる場所に</span></p></div>
+</section>
+
+<!-- ⑦ 完成 -->
+<section id="sec7">
+  <div class="finale">
+    <div class="emoji">🍓✨</div>
+    <h2>ロゴ完成！</h2>
+    <p>お店の顔ができました。<br>次回は、このロゴを使って<strong>名刺</strong>をつくります🎵</p>
+    <a class="loop" href="#sec1">▶ 最初のステップに戻る</a>
+  </div>
+</section>
+
+</main>
+
+<footer>あさひ先生のDX講座｜Canvaデザイン編 第1回 ロゴ</footer>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var box = btn.closest('.prompt-box');
+    var text = box.querySelector('.prompt-text').textContent.trim();
+    var done = function(){
+      var org = btn.textContent;
+      btn.textContent = '✅ コピーしました';
+      setTimeout(function(){ btn.textContent = org; }, 1600);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      done();
+    }
+  });
+});
+</script>
+
+
+</body>
+</html>
