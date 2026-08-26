@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アプリづくり 見取り図｜何を作るか決める前に読む</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF3F6;
+  --grid-fine:#DFE8EE;
+  --grid-bold:#CBD9E3;
+  --ink:#14314F;
+  --ink-soft:#4A6480;
+  --teal:#0F7A80;
+  --teal-pale:#DDEEEE;
+  --amber:#B5811A;
+  --amber-pale:#F6EBD2;
+  --card:#FFFFFF;
+  --line:#C3D2DD;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN",sans-serif;
+  color:var(--ink);
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid-fine) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-fine) 1px, transparent 1px),
+    linear-gradient(var(--grid-bold) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-bold) 1px, transparent 1px);
+  background-size:8px 8px, 8px 8px, 64px 64px, 64px 64px;
+  line-height:1.9;
+  font-size:15px;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:"Roboto Mono",monospace;}
+
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 100px;}
+
+/* ---------- 表題欄 ---------- */
+.titleblock{
+  margin-top:40px;
+  border:2px solid var(--ink);
+  background:var(--card);
+  box-shadow:6px 6px 0 rgba(20,49,79,.10);
+}
+.titleblock .top{
+  padding:30px 28px 24px;
+  border-bottom:1px solid var(--line);
+}
+.eyebrow{
+  font-family:"Roboto Mono",monospace;
+  font-size:11px;
+  letter-spacing:.22em;
+  color:var(--teal);
+  margin:0 0 14px;
+  text-transform:uppercase;
+}
+h1{
+  font-size:clamp(26px,5.4vw,42px);
+  font-weight:900;
+  line-height:1.3;
+  letter-spacing:.02em;
+  margin:0 0 12px;
+}
+h1 .thin{display:block;font-size:.44em;font-weight:500;letter-spacing:.1em;color:var(--ink-soft);margin-top:10px;}
+.lede{margin:0;color:var(--ink-soft);font-size:14px;max-width:52em;}
+.specrow{display:flex;flex-wrap:wrap;}
+.specrow div{
+  flex:1 1 33.333%;
+  padding:11px 16px;
+  border-right:1px solid var(--line);
+  font-family:"Roboto Mono",monospace;
+  font-size:10.5px;
+  letter-spacing:.08em;
+  color:var(--ink-soft);
+}
+.specrow div:last-child{border-right:none;}
+.specrow b{display:block;font-family:"Zen Kaku Gothic New",sans-serif;font-size:13px;color:var(--ink);letter-spacing:0;font-weight:700;}
+
+/* ---------- タブ ---------- */
+nav.tabs{
+  position:sticky;top:0;z-index:20;
+  display:flex;gap:0;
+  margin-top:26px;
+  background:var(--paper);
+  border-bottom:2px solid var(--ink);
+}
+nav.tabs button{
+  flex:1;
+  appearance:none;
+  border:2px solid var(--ink);
+  border-bottom:none;
+  border-right:none;
+  background:transparent;
+  font-family:"Zen Kaku Gothic New",sans-serif;
+  font-size:14px;font-weight:700;
+  color:var(--ink-soft);
+  padding:13px 8px;
+  cursor:pointer;
+  transition:background .15s,color .15s;
+}
+nav.tabs button:last-child{border-right:2px solid var(--ink);}
+nav.tabs button:hover{background:#E3EDF2;color:var(--ink);}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:#fff;}
+nav.tabs button .num{font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.15em;display:block;opacity:.75;}
+nav.tabs button:focus-visible{outline:3px solid var(--amber);outline-offset:-3px;}
+
+.panel{display:none;padding-top:36px;}
+.panel.on{display:block;animation:fade .35s ease both;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* ---------- 見出し ---------- */
+.axis{margin:0 0 34px;}
+.axis-head{display:flex;align-items:baseline;gap:12px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:20px;}
+.axis-head .tag{
+  font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.16em;
+  background:var(--ink);color:#fff;padding:3px 8px;white-space:nowrap;
+}
+.axis-head h2{font-size:19px;font-weight:900;margin:0;letter-spacing:.02em;}
+.axis-head .q{font-size:12px;color:var(--ink-soft);margin-left:auto;white-space:nowrap;}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-top:4px solid var(--teal);
+  padding:18px 18px 16px;
+}
+.card.amber{border-top-color:var(--amber);}
+.card.ink{border-top-color:var(--ink);}
+.card h3{margin:0 0 4px;font-size:16px;font-weight:900;}
+.card .sub{font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.12em;color:var(--teal);margin-bottom:10px;}
+.card.amber .sub{color:var(--amber);}
+.card.ink .sub{color:var(--ink-soft);}
+.card p{margin:0 0 10px;font-size:13.5px;}
+.card ul{margin:0;padding-left:1.15em;font-size:13px;color:var(--ink-soft);}
+.card li{margin-bottom:3px;}
+.card .ex{
+  margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);
+  font-size:12.5px;color:var(--ink-soft);
+}
+.card .ex b{color:var(--ink);}
+
+.note{
+  background:var(--amber-pale);
+  border-left:4px solid var(--amber);
+  padding:14px 18px;
+  font-size:13.5px;
+  margin:22px 0 0;
+}
+.note b{font-weight:700;}
+
+/* 公開ステップ */
+.steps{counter-reset:s;display:grid;gap:10px;}
+.step{
+  background:var(--card);border:1px solid var(--line);
+  padding:16px 18px 16px 62px;position:relative;
+}
+.step::before{
+  counter-increment:s;content:counter(s,decimal-leading-zero);
+  position:absolute;left:0;top:0;bottom:0;width:46px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--ink);color:#fff;
+  font-family:"Roboto Mono",monospace;font-size:13px;
+}
+.step h3{margin:0 0 4px;font-size:15px;font-weight:900;}
+.step p{margin:0;font-size:13.5px;color:var(--ink-soft);}
+
+/* ---------- 診断 ---------- */
+.quizbox{
+  background:var(--card);border:2px solid var(--ink);
+  box-shadow:6px 6px 0 rgba(20,49,79,.10);
+  padding:0;overflow:hidden;
+}
+.qmeter{display:flex;height:6px;background:var(--grid-bold);}
+.qmeter i{background:var(--teal);transition:width .35s ease;display:block;height:100%;}
+.qbody{padding:34px 30px 30px;}
+.qcount{font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.16em;color:var(--teal);margin-bottom:14px;}
+.qtext{font-size:clamp(19px,3.6vw,25px);font-weight:900;line-height:1.6;margin:0 0 10px;letter-spacing:.01em;}
+.qhelp{font-size:13.5px;color:var(--ink-soft);margin:0 0 26px;}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.answers button{
+  appearance:none;cursor:pointer;
+  font-family:"Zen Kaku Gothic New",sans-serif;
+  font-size:17px;font-weight:900;
+  padding:20px 10px;
+  border:2px solid var(--ink);
+  background:var(--card);color:var(--ink);
+  transition:transform .12s, background .12s, color .12s;
+}
+.answers button .en{display:block;font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.2em;font-weight:500;opacity:.6;margin-top:5px;}
+.answers button:hover{background:var(--ink);color:#fff;transform:translate(-2px,-2px);box-shadow:4px 4px 0 rgba(20,49,79,.2);}
+.answers button:focus-visible{outline:3px solid var(--amber);outline-offset:3px;}
+.qfoot{margin-top:22px;display:flex;justify-content:space-between;align-items:center;}
+.linkbtn{
+  appearance:none;background:none;border:none;cursor:pointer;
+  font-family:"Zen Kaku Gothic New",sans-serif;font-size:13px;color:var(--ink-soft);
+  text-decoration:underline;text-underline-offset:3px;padding:4px;
+}
+.linkbtn:hover{color:var(--teal);}
+.trail{font-family:"Roboto Mono",monospace;font-size:10.5px;color:var(--ink-soft);letter-spacing:.08em;}
+
+/* ---------- 結果（設計図） ---------- */
+.sheet{background:var(--card);border:2px solid var(--ink);box-shadow:6px 6px 0 rgba(20,49,79,.10);}
+.sheet-head{padding:24px 28px 20px;border-bottom:2px solid var(--ink);}
+.sheet-head .eyebrow{margin-bottom:8px;}
+.sheet-head h2{margin:0;font-size:clamp(21px,4.4vw,30px);font-weight:900;line-height:1.4;}
+.sheet-head p{margin:10px 0 0;font-size:13.5px;color:var(--ink-soft);}
+.level{display:flex;align-items:center;gap:10px;margin-top:16px;}
+.level .bars{display:flex;gap:4px;}
+.level .bars span{width:34px;height:9px;background:var(--grid-bold);}
+.level .bars span.on{background:var(--amber);}
+.level em{font-style:normal;font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.12em;color:var(--ink-soft);}
+
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.spec > div{padding:20px 24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);}
+.spec h4{
+  margin:0 0 8px;font-family:"Roboto Mono",monospace;
+  font-size:10px;letter-spacing:.18em;color:var(--teal);font-weight:500;
+}
+.spec .val{font-size:16px;font-weight:900;margin-bottom:6px;line-height:1.5;}
+.spec p{margin:0;font-size:13px;color:var(--ink-soft);}
+.spec code{
+  font-family:"Roboto Mono",monospace;font-size:11.5px;
+  background:var(--teal-pale);padding:1px 5px;
+}
+.sheet-foot{padding:22px 26px 26px;}
+.sheet-foot h4{margin:0 0 12px;font-size:15px;font-weight:900;}
+.roadmap{display:grid;gap:8px;counter-reset:r;}
+.roadmap li{
+  list-style:none;position:relative;padding:11px 14px 11px 42px;
+  background:var(--paper);border:1px solid var(--line);font-size:13.5px;
+}
+.roadmap li::before{
+  counter-increment:r;content:"STEP " counter(r);
+  position:absolute;left:-1px;top:-1px;bottom:-1px;width:34px;
+  writing-mode:vertical-rl;display:flex;align-items:center;justify-content:center;
+  background:var(--teal);color:#fff;font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.1em;
+}
+.retry{margin-top:26px;text-align:center;}
+.retry button{
+  appearance:none;cursor:pointer;border:2px solid var(--ink);background:var(--ink);color:#fff;
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:14px;padding:13px 30px;
+}
+.retry button:hover{background:var(--teal);border-color:var(--teal);}
+
+footer{margin-top:56px;text-align:center;font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.16em;color:var(--ink-soft);}
+
+@media (max-width:560px){
+  .specrow div{flex:1 1 100%;border-right:none;border-bottom:1px solid var(--line);}
+  .specrow div:last-child{border-bottom:none;}
+  .answers{grid-template-columns:1fr;}
+  .axis-head .q{display:none;}
+  .qbody{padding:26px 20px 24px;}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="titleblock">
+    <div class="top">
+      <p class="eyebrow">before you build / 作る前の見取り図</p>
+      <h1>アプリを作りたい。<br>で、どのアプリ？
+        <span class="thin">ひとことで「アプリ」と言っても、動く場所も作り方も公開のしかたも別物です。</span>
+      </h1>
+      <p class="lede">まずは全体の地図を見て、次に質問へ答えてください。「はい/いいえ」で進むと、あなたが作りたいものに必要な種類・保存のしかた・作り方・公開先が1枚にまとまります。</p>
+    </div>
+    <div class="specrow">
+      <div>SECTION 01<b>アプリの見取り図</b></div>
+      <div>SECTION 02<b>はい/いいえ診断</b></div>
+      <div>OUTPUT<b>あなたの設計メモ</b></div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-map" aria-controls="panel-map" aria-selected="true"><span class="num">SECTION 01</span>アプリの見取り図</button>
+    <button role="tab" id="tab-quiz" aria-controls="panel-quiz" aria-selected="false"><span class="num">SECTION 02</span>はい/いいえ診断</button>
+  </nav>
+
+  <!-- ============ 見取り図 ============ -->
+  <section class="panel on" id="panel-map" role="tabpanel" aria-labelledby="tab-map">
+
+    <div class="axis">
+      <div class="axis-head">
+        <span class="tag mono">AXIS A</span>
+        <h2>どこで動くか</h2>
+        <span class="q">＝利用者がどうやって開くか</span>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <h3>Webアプリ</h3>
+          <div class="sub">BROWSER</div>
+          <p>ブラウザでURLを開くだけで使えるもの。インストールが要りません。</p>
+          <ul>
+            <li>審査なし、公開まで最短</li>
+            <li>URLを送るだけで共有できる</li>
+            <li>作るのがいちばん簡単</li>
+          </ul>
+          <div class="ex"><b>例：</b>予約フォーム、診断ツール、社内の集計画面</div>
+        </div>
+        <div class="card">
+          <h3>PWA</h3>
+          <div class="sub">HOME SCREEN</div>
+          <p>中身はWebアプリのまま、スマホのホーム画面にアイコンを置けるようにしたもの。</p>
+          <ul>
+            <li>ストアの審査も登録料も不要</li>
+            <li>見た目はスマホアプリそのもの</li>
+            <li>設定ファイルを1つ足すだけ</li>
+          </ul>
+          <div class="ex"><b>例：</b>毎日開く記録アプリ、店舗スタッフ用ツール</div>
+        </div>
+        <div class="card">
+          <h3>スマホアプリ</h3>
+          <div class="sub">NATIVE</div>
+          <p>App StoreやGoogle Playからインストールするタイプ。カメラや通知を本格的に扱えます。</p>
+          <ul>
+            <li>開発者登録が有料（年間費用あり）</li>
+            <li>公開に審査があり日数がかかる</li>
+            <li>作る手間はいちばん大きい</li>
+          </ul>
+          <div class="ex"><b>例：</b>写真を撮って加工するアプリ、通知が主役のアプリ</div>
+        </div>
+      </div>
+      <div class="note"><b>迷ったらWebアプリから。</b>ほとんどの「作ってみたい」は、Webアプリで実現できます。スマホアプリにしたくなったら、あとからPWAにすれば十分な場合がほとんどです。</div>
+    </div>
+
+    <div class="axis">
+      <div class="axis-head">
+        <span class="tag mono">AXIS B</span>
+        <h2>データをどう残すか</h2>
+        <span class="q">＝ここで難しさが決まる</span>
+      </div>
+      <div class="cards">
+        <div class="card amber">
+          <h3>残さない</h3>
+          <div class="sub">LEVEL 1</div>
+          <p>開くたびに真っさらに戻るタイプ。計算・変換・診断など、その場で完結するもの。</p>
+          <div class="ex"><b>必要なもの：</b>HTMLファイル1枚だけ</div>
+        </div>
+        <div class="card amber">
+          <h3>この端末だけに残す</h3>
+          <div class="sub">LEVEL 2</div>
+          <p>入力した内容がそのスマホ・パソコンの中に保存され、次に開いても残っています。ただし他の端末からは見えません。</p>
+          <div class="ex"><b>必要なもの：</b>ブラウザの保存機能（localStorage）</div>
+        </div>
+        <div class="card amber">
+          <h3>クラウドに残す</h3>
+          <div class="sub">LEVEL 3</div>
+          <p>データをネット上に保存し、どの端末からでも、複数人でも同じデータを見られます。</p>
+          <div class="ex"><b>必要なもの：</b>FirebaseやSupabaseなどのデータベース</div>
+        </div>
+      </div>
+      <div class="note">「難しいアプリ」と「簡単なアプリ」を分けているのは、見た目ではなく<b>ここ</b>です。データを何人で共有するかを決めた瞬間に、必要な技術が決まります。</div>
+    </div>
+
+    <div class="axis">
+      <div class="axis-head">
+        <span class="tag mono">AXIS C</span>
+        <h2>どうやって作るか</h2>
+        <span class="q">＝3つのルートがある</span>
+      </div>
+      <div class="cards">
+        <div class="card ink">
+          <h3>AIに作ってもらう</h3>
+          <div class="sub">ROUTE 1</div>
+          <p>ClaudeやGeminiに「こういうものが欲しい」と伝えて、HTMLファイルを書いてもらう方法。</p>
+          <ul><li>いちばん速い</li><li>直したい所を言えば直せる</li><li>小〜中規模まで対応できる</li></ul>
+        </div>
+        <div class="card ink">
+          <h3>ノーコードで組む</h3>
+          <div class="sub">ROUTE 2</div>
+          <p>GlideやAppSheetなど、部品を並べて作るサービスを使う方法。データベースやログインが最初から用意されています。</p>
+          <ul><li>複数人で使うものに強い</li><li>月額費用がかかることが多い</li><li>そのサービスの外には持ち出せない</li></ul>
+        </div>
+        <div class="card ink">
+          <h3>自分でコードを書く</h3>
+          <div class="sub">ROUTE 3</div>
+          <p>HTML・CSS・JavaScriptを学んで書く方法。時間はかかりますが、思った通りに作れます。</p>
+          <ul><li>作れるものに制限がない</li><li>費用がほぼかからない</li><li>AIと併用するのが今の主流</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="axis">
+      <div class="axis-head">
+        <span class="tag mono">AXIS D</span>
+        <h2>Webに公開するまで</h2>
+        <span class="q">＝ファイルを置く場所を借りる</span>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <h3>手元で開いて確認する</h3>
+          <p>作ったHTMLファイルをダブルクリックすれば、自分のパソコンでそのまま動きます。ここまでは公開ではありません。</p>
+        </div>
+        <div class="step">
+          <h3>置き場所を用意する</h3>
+          <p>GitHub PagesかNetlifyが定番です。どちらも無料で、ファイルをアップロード（またはドラッグ&ドロップ）するだけでURLが発行されます。</p>
+        </div>
+        <div class="step">
+          <h3>URLを配る</h3>
+          <p>発行されたURLを送れば、相手はブラウザで開くだけで使えます。QRコードにすると配りやすくなります。</p>
+        </div>
+        <div class="step">
+          <h3>必要なら独自ドメインにする</h3>
+          <p>覚えやすいアドレスにしたい場合だけ。年間1000円台から取得でき、あとから設定できます。急ぐ必要はありません。</p>
+        </div>
+      </div>
+      <div class="note"><b>注意：</b>公開したページは誰でも開けます。名簿や顧客情報などをそのままファイルに書き込んで公開しないでください。人に見せたくないデータを扱うなら、ログインの仕組みが必要になります。</div>
+    </div>
+
+  </section>
+
+  <!-- ============ 診断 ============ -->
+  <section class="panel" id="panel-quiz" role="tabpanel" aria-labelledby="tab-quiz">
+    <div id="quizStage"></div>
+  </section>
+
+  <footer>APP STARTER MAP / for DX course</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- タブ ---------- */
+  var tabs=[{b:"tab-map",p:"panel-map"},{b:"tab-quiz",p:"panel-quiz"}];
+  tabs.forEach(function(t){
+    document.getElementById(t.b).addEventListener("click",function(){show(t.b);});
+  });
+  function show(id){
+    tabs.forEach(function(t){
+      var on=(t.b===id);
+      document.getElementById(t.b).setAttribute("aria-selected",on?"true":"false");
+      document.getElementById(t.p).classList.toggle("on",on);
+    });
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  /* ---------- 質問 ---------- */
+  var QUESTIONS=[
+    {key:"share",
+     text:"作ったものを、自分以外の人にも使ってもらいたいですか？",
+     help:"自分だけの道具なら「いいえ」。家族・生徒・お客さんに配るなら「はい」。"},
+    {key:"phone",
+     text:"スマホのホーム画面にアイコンを置いて開けるようにしたいですか？",
+     help:"ブラウザでURLを開いて使えれば十分なら「いいえ」。"},
+    {key:"native",
+     text:"カメラ・通知・GPSなど、スマホ本体の機能を使いますか？",
+     help:"写真を選んで表示するだけなら「いいえ」で構いません。",
+     when:function(a){return a.phone;}},
+    {key:"persist",
+     text:"入力した内容を、次に開いたときにも残しておきたいですか？",
+     help:"計算や診断のように、その場で終わるなら「いいえ」。"},
+    {key:"cloud",
+     text:"そのデータを、別の端末や他の人とも見られるようにしますか？",
+     help:"自分のスマホの中だけに残ればいいなら「いいえ」。",
+     when:function(a){return a.persist;}},
+    {key:"auth",
+     text:"利用者ごとにログインして、自分のデータだけ見えるようにしますか？",
+     help:"全員が同じ画面を見るだけなら「いいえ」。",
+     when:function(a){return a.cloud;}},
+    {key:"ai",
+     text:"AIの機能（文章生成・画像生成・要約など）を組み込みますか？",
+     help:"アプリの中でAIが答えを返すような作りにするかどうかです。"},
+    {key:"code",
+     text:"自分でコードを書くことに挑戦してみたいですか？",
+     help:"「とにかく完成させたい」なら「いいえ」で大丈夫です。"}
+  ];
+
+  var answers={}, order=[], idx=0;
+
+  function activeList(){
+    return QUESTIONS.filter(function(q){return !q.when || q.when(answers);});
+  }
+
+  function render(){
+    var list=activeList();
+    if(idx>=list.length){renderResult();return;}
+    var q=list[idx];
+    var pct=Math.round(idx/list.length*100);
+    var stage=document.getElementById("quizStage");
+    stage.innerHTML=
+      '<div class="quizbox">'+
+        '<div class="qmeter"><i style="width:'+pct+'%"></i></div>'+
+        '<div class="qbody">'+
+          '<div class="qcount mono">QUESTION '+String(idx+1).padStart(2,"0")+' / '+String(list.length).padStart(2,"0")+'</div>'+
+          '<p class="qtext">'+q.text+'</p>'+
+          '<p class="qhelp">'+q.help+'</p>'+
+          '<div class="answers">'+
+            '<button data-v="1">はい<span class="en">YES</span></button>'+
+            '<button data-v="0">いいえ<span class="en">NO</span></button>'+
+          '</div>'+
+          '<div class="qfoot">'+
+            (idx>0?'<button class="linkbtn" id="backBtn">← 1つ前にもどる</button>':'<span></span>')+
+            '<span class="trail mono">'+"■".repeat(idx)+"□".repeat(list.length-idx)+'</span>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+    stage.querySelectorAll(".answers button").forEach(function(b){
+      b.addEventListener("click",function(){
+        answers[q.key]=(b.dataset.v==="1");
+        idx++;
+        render();
+      });
+    });
+    var back=document.getElementById("backBtn");
+    if(back) back.addEventListener("click",function(){
+      idx--;
+      var l=activeList();
+      if(l[idx]) delete answers[l[idx].key];
+      render();
+    });
+  }
+
+  /* ---------- 結果の組み立て ---------- */
+  function build(){
+    var a=answers, r={};
+
+    // 種類
+    if(a.native){
+      r.kind="スマホアプリ（ネイティブ）";
+      r.kindNote="本体の機能を使うため、ストアで配るタイプになります。まずはPWAで作って、本当に必要か確かめてからでも遅くありません。";
+    }else if(a.phone){
+      r.kind="PWA（ホーム画面に置けるWebアプリ）";
+      r.kindNote="中身はWebアプリのままで、設定ファイルを1つ足すだけでアイコンを置けるようになります。ストアの審査も登録料も不要です。";
+    }else{
+      r.kind="Webアプリ（ブラウザで開く）";
+      r.kindNote="URLを開くだけで使える、いちばん軽い形です。作るのも公開するのも最短で済みます。";
+    }
+
+    // データ
+    if(!a.persist){
+      r.data="保存なし";
+      r.dataNote="開くたびにリセットされる作りです。ファイル1枚で完結するので、いちばん手間がかかりません。";
+    }else if(!a.cloud){
+      r.data="この端末の中に保存";
+      r.dataNote="ブラウザの保存機能（<code>localStorage</code>）を使います。追加費用も登録も不要ですが、別の端末には引き継がれません。";
+    }else if(!a.auth){
+      r.data="クラウドに保存（全員で共有）";
+      r.dataNote="<code>Firebase</code>や<code>Supabase</code>といったデータベースを使います。無料枠から始められます。";
+    }else{
+      r.data="クラウドに保存＋ログイン";
+      r.dataNote="データベースに加えて、ログインの仕組み（<code>Firebase Authentication</code>など）が必要です。個人情報を扱うなら必須の構成です。";
+    }
+
+    // 作り方
+    if(a.native && a.code){
+      r.how="Flutter または React Native";
+      r.howNote="ネイティブアプリを自分で書くルートです。学習量は多め。先にPWA版を作って反応を見るのを強くおすすめします。";
+    }else if(a.native && !a.code){
+      r.how="ノーコード（Glide / AppSheet）";
+      r.howNote="コードを書かずにスマホアプリ形式まで持っていけます。月額費用がかかる点だけ先に確認してください。";
+    }else if(!a.code && (a.cloud||a.auth)){
+      r.how="ノーコード（Glide / AppSheet / Bubble）";
+      r.howNote="データベースとログインが最初から用意されているので、共有するアプリと相性が良いルートです。";
+    }else if(!a.code){
+      r.how="AIに作ってもらう（HTML1枚）";
+      r.howNote="ClaudeやGeminiに欲しい機能を伝えて、HTMLファイルを書いてもらいます。直したい所を言葉で伝えれば修正できます。";
+    }else if(a.cloud||a.auth){
+      r.how="HTML+JavaScript ＋ Firebase";
+      r.howNote="まず見た目をHTMLで作り、あとからデータベースをつなぎます。慣れてきたらReactに進むと管理しやすくなります。";
+    }else{
+      r.how="HTML+CSS+JavaScript（ファイル1枚）";
+      r.howNote="1つのファイルに全部書く形から始めるのが最短です。AIに書かせたコードを読んで直す進め方が、いちばん早く身につきます。";
+    }
+
+    // 公開
+    if(a.native){
+      r.pub="App Store / Google Play";
+      r.pubNote="開発者登録（有料）と審査が必要で、公開までに日数がかかります。テスト段階ではPWAとしてURLで配る方法も併用できます。";
+    }else if(!a.share){
+      r.pub="公開しなくてもOK";
+      r.pubNote="自分専用ならファイルをダブルクリックして開くだけで動きます。人に見せたくなったらGitHub Pagesに置けば十分です。";
+    }else{
+      r.pub="GitHub Pages または Netlify";
+      r.pubNote="どちらも無料です。Netlifyはファイルをドラッグ&ドロップするだけ、GitHub Pagesは更新の履歴を残しながら運用できます。";
+    }
+
+    // 難易度
+    var score=0;
+    if(a.persist)score++;
+    if(a.cloud)score++;
+    if(a.auth)score++;
+    if(a.native)score++;
+    if(a.ai)score++;
+    r.level=score<=1?1:(score===2?2:(score===3?3:4));
+    r.levelLabel=["","そのまま作り始められます","少し準備が必要です","段階を分けて進めましょう","最初は縮小版から始めましょう"][r.level];
+
+    // ロードマップ
+    var road=[];
+    road.push("紙に画面の絵を描く。ボタンを押したら何が起きるか、矢印で書き足す。ここを飛ばすと必ず作り直しになります。");
+    if(a.persist||a.cloud){
+      road.push("まず保存なしの状態で、画面と動きだけを完成させる。データの保存は後回しにするのがコツです。");
+    }else{
+      road.push("HTMLファイル1枚として完成させる。この時点でもう「アプリ」です。");
+    }
+    if(a.cloud) road.push("動きが固まってから、Firebaseなどのデータベースをつなぐ。ここで初めて共有できるようになります。");
+    if(a.auth) road.push("ログインを追加する。個人情報を扱う場合は、この段階で「誰が何を見られるか」を紙に書き出して確認してください。");
+    if(a.ai) road.push("AIの機能を足す。APIキーは使った分だけ料金がかかるので、上限設定を先に済ませてから公開すること。");
+    if(a.share&&!a.native) road.push("GitHub PagesかNetlifyに置いてURLを発行し、まず2〜3人に使ってもらう。感想を聞いてから直します。");
+    if(a.native) road.push("PWA版を先に配って反応を見る。それでも足りない機能がはっきりしたら、ストア公開に進みます。");
+    r.road=road;
+
+    return r;
+  }
+
+  function renderResult(){
+    var r=build(), a=answers;
+    var bars="";
+    for(var i=1;i<=4;i++) bars+='<span class="'+(i<=r.level?"on":"")+'"></span>';
+
+    var aiCard = a.ai ?
+      '<div><h4>AI機能</h4><div class="val">APIを使って組み込む</div><p><code>Claude API</code>や<code>Gemini API</code>を呼び出します。無料ではなく従量課金なので、上限額の設定を先に。</p></div>' : '';
+
+    document.getElementById("quizStage").innerHTML=
+      '<div class="sheet">'+
+        '<div class="sheet-head">'+
+          '<p class="eyebrow">your build plan / あなたの設計メモ</p>'+
+          '<h2>'+r.kind+'として作るのが近道です</h2>'+
+          '<p>'+r.kindNote+'</p>'+
+          '<div class="level"><div class="bars">'+bars+'</div><em>LEVEL '+r.level+' — '+r.levelLabel+'</em></div>'+
+        '</div>'+
+        '<div class="spec">'+
+          '<div><h4>KIND / 種類</h4><div class="val">'+r.kind+'</div><p>'+r.kindNote+'</p></div>'+
+          '<div><h4>DATA / データ</h4><div class="val">'+r.data+'</div><p>'+r.dataNote+'</p></div>'+
+          '<div><h4>HOW / 作り方</h4><div class="val">'+r.how+'</div><p>'+r.howNote+'</p></div>'+
+          '<div><h4>PUBLISH / 公開</h4><div class="val">'+r.pub+'</div><p>'+r.pubNote+'</p></div>'+
+          aiCard+
+        '</div>'+
+        '<div class="sheet-foot">'+
+          '<h4>この順番で進めてください</h4>'+
+          '<ul class="roadmap">'+r.road.map(function(t){return "<li>"+t+"</li>";}).join("")+'</ul>'+
+        '</div>'+
+      '</div>'+
+      '<div class="retry"><button id="retryBtn">もう一度やってみる</button></div>';
+
+    document.getElementById("retryBtn").addEventListener("click",function(){
+      answers={};idx=0;render();
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
