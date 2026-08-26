@@ -243,6 +243,41 @@ nav.tabs button:focus-visible{outline:3px solid var(--amber);outline-offset:-3px
   writing-mode:vertical-rl;display:flex;align-items:center;justify-content:center;
   background:var(--teal);color:#fff;font-family:"Roboto Mono",monospace;font-size:8.5px;letter-spacing:.1em;
 }
+/* 追記欄 */
+.fillin{padding:20px 26px 22px;border-bottom:1px solid var(--line);background:var(--paper);}
+.fillin > p{margin:0 0 14px;font-size:13px;color:var(--ink-soft);}
+.fillin .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
+.fillin label{display:block;font-family:"Roboto Mono",monospace;font-size:10px;letter-spacing:.16em;color:var(--teal);margin-bottom:5px;}
+.fillin input{
+  width:100%;padding:10px 12px;
+  font-family:"Zen Kaku Gothic New",sans-serif;font-size:14px;color:var(--ink);
+  background:var(--card);border:1px solid var(--line);
+}
+.fillin input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 2px var(--teal-pale);}
+
+/* 書き出し */
+.export{padding:24px 26px 26px;border-top:2px solid var(--ink);background:var(--paper);}
+.export h4{margin:0 0 4px;font-size:15px;font-weight:900;}
+.export .why{margin:0 0 14px;font-size:13px;color:var(--ink-soft);}
+.export textarea{
+  width:100%;height:260px;resize:vertical;
+  font-family:"Roboto Mono",monospace;font-size:12px;line-height:1.85;
+  color:var(--ink);background:var(--card);
+  border:1px solid var(--line);padding:14px 15px;
+}
+.export textarea:focus{outline:none;border-color:var(--teal);}
+.exbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px;}
+.exbar button{
+  appearance:none;cursor:pointer;border:2px solid var(--teal);background:var(--teal);color:#fff;
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:14px;padding:12px 24px;
+  transition:background .15s,color .15s;
+}
+.exbar button:hover{background:#0B6167;border-color:#0B6167;}
+.exbar button.ghost{background:transparent;color:var(--teal);}
+.exbar button.ghost:hover{background:var(--teal-pale);color:var(--ink);}
+.exbar button:focus-visible{outline:3px solid var(--amber);outline-offset:2px;}
+.exbar .msg{font-size:12.5px;color:var(--teal);font-weight:700;}
+
 .retry{margin-top:26px;text-align:center;}
 .retry button{
   appearance:none;cursor:pointer;border:2px solid var(--ink);background:var(--ink);color:#fff;
@@ -448,31 +483,31 @@ footer{margin-top:56px;text-align:center;font-family:"Roboto Mono",monospace;fon
 
   /* ---------- 質問 ---------- */
   var QUESTIONS=[
-    {key:"share",
+    {key:"share",label:"自分以外の人にも使ってもらう",
      text:"作ったものを、自分以外の人にも使ってもらいたいですか？",
      help:"自分だけの道具なら「いいえ」。家族・生徒・お客さんに配るなら「はい」。"},
-    {key:"phone",
+    {key:"phone",label:"スマホのホーム画面から開けるようにする",
      text:"スマホのホーム画面にアイコンを置いて開けるようにしたいですか？",
      help:"ブラウザでURLを開いて使えれば十分なら「いいえ」。"},
-    {key:"native",
+    {key:"native",label:"カメラ・通知・GPSなど端末機能を使う",
      text:"カメラ・通知・GPSなど、スマホ本体の機能を使いますか？",
      help:"写真を選んで表示するだけなら「いいえ」で構いません。",
      when:function(a){return a.phone;}},
-    {key:"persist",
+    {key:"persist",label:"入力内容を次回も残す",
      text:"入力した内容を、次に開いたときにも残しておきたいですか？",
      help:"計算や診断のように、その場で終わるなら「いいえ」。"},
-    {key:"cloud",
+    {key:"cloud",label:"別の端末や他の人とデータを共有する",
      text:"そのデータを、別の端末や他の人とも見られるようにしますか？",
      help:"自分のスマホの中だけに残ればいいなら「いいえ」。",
      when:function(a){return a.persist;}},
-    {key:"auth",
+    {key:"auth",label:"利用者ごとのログインが必要",
      text:"利用者ごとにログインして、自分のデータだけ見えるようにしますか？",
      help:"全員が同じ画面を見るだけなら「いいえ」。",
      when:function(a){return a.cloud;}},
-    {key:"ai",
+    {key:"ai",label:"AI機能を組み込む",
      text:"AIの機能（文章生成・画像生成・要約など）を組み込みますか？",
      help:"アプリの中でAIが答えを返すような作りにするかどうかです。"},
-    {key:"code",
+    {key:"code",label:"自分でコードを書く",
      text:"自分でコードを書くことに挑戦してみたいですか？",
      help:"「とにかく完成させたい」なら「いいえ」で大丈夫です。"}
   ];
@@ -614,6 +649,55 @@ footer{margin-top:56px;text-align:center;font-family:"Roboto Mono",monospace;fon
     return r;
   }
 
+  /* ---------- 要件定義テキストの生成 ---------- */
+  function buildText(r){
+    var a=answers;
+    var what=(document.getElementById("fWhat")||{}).value||"";
+    var who=(document.getElementById("fWho")||{}).value||"";
+    var L=[];
+
+    L.push("# アプリの要件定義メモ");
+    L.push("");
+    L.push("## 1. 作りたいもの");
+    L.push(what.trim()||"（未記入：ここに作りたいものを1行で書いてください）");
+    L.push("");
+    L.push("## 2. 使う人");
+    L.push(who.trim()||"（未記入：誰が使うかを書いてください）");
+    L.push("");
+    L.push("## 3. 決まっている仕様");
+    L.push("- 種類：" + r.kind);
+    L.push("- データの扱い：" + r.data);
+    L.push("- 作り方：" + r.how);
+    L.push("- 公開方法：" + r.pub);
+    L.push("- AI機能：" + (a.ai ? "組み込む（生成・要約などをアプリ内で実行）" : "使わない"));
+    L.push("- 難易度の目安：レベル" + r.level + " / 4");
+    L.push("");
+    L.push("## 4. 判断のもとになった回答");
+    activeList().forEach(function(q){
+      L.push("- " + q.label + "：" + (a[q.key] ? "はい" : "いいえ"));
+    });
+    L.push("");
+    L.push("## 5. 進めたい順番");
+    r.road.forEach(function(t,i){ L.push((i+1) + ". " + t); });
+    L.push("");
+    L.push("## 6. お願いしたいこと");
+    L.push("上の要件でアプリを作りたいです。次の順番で進めてください。");
+    L.push("");
+    L.push("1. この要件で足りない情報があれば、まとめて質問してください（一度に3つまで）");
+    L.push("2. 画面の構成と、ボタンを押したときに何が起きるかを、文章で先に説明してください");
+    L.push("3. 私が確認してから、コードを書き始めてください");
+    L.push("");
+    L.push("なお、私はプログラミング初心者です。専門用語には短い説明を添えてください。");
+    L.push("修正するときは、全部を書き直さずに、直す箇所だけ示してもらえると助かります。");
+
+    return L.join("\n");
+  }
+
+  function refreshText(r){
+    var ta=document.getElementById("exText");
+    if(ta) ta.value=buildText(r);
+  }
+
   function renderResult(){
     var r=build(), a=answers;
     var bars="";
@@ -630,6 +714,13 @@ footer{margin-top:56px;text-align:center;font-family:"Roboto Mono",monospace;fon
           '<p>'+r.kindNote+'</p>'+
           '<div class="level"><div class="bars">'+bars+'</div><em>LEVEL '+r.level+' — '+r.levelLabel+'</em></div>'+
         '</div>'+
+        '<div class="fillin">'+
+          '<p>この2つを埋めると、下の要件定義がそのままAIに渡せる内容になります。空欄のままでも書き出せます。</p>'+
+          '<div class="row">'+
+            '<div><label>WHAT / 作りたいもの</label><input id="fWhat" type="text" placeholder="例：来店したお客さんの記録をつけるアプリ"></div>'+
+            '<div><label>WHO / 使う人</label><input id="fWho" type="text" placeholder="例：自分と、店のスタッフ3人"></div>'+
+          '</div>'+
+        '</div>'+
         '<div class="spec">'+
           '<div><h4>KIND / 種類</h4><div class="val">'+r.kind+'</div><p>'+r.kindNote+'</p></div>'+
           '<div><h4>DATA / データ</h4><div class="val">'+r.data+'</div><p>'+r.dataNote+'</p></div>'+
@@ -641,8 +732,53 @@ footer{margin-top:56px;text-align:center;font-family:"Roboto Mono",monospace;fon
           '<h4>この順番で進めてください</h4>'+
           '<ul class="roadmap">'+r.road.map(function(t){return "<li>"+t+"</li>";}).join("")+'</ul>'+
         '</div>'+
+        '<div class="export">'+
+          '<h4>この内容をAIに渡す</h4>'+
+          '<p class="why">下の文章をコピーして、ClaudeやGeminiの最初のメッセージに貼り付けてください。何を作りたいかを一から説明せずに済みます。文章はそのまま書き直せます。</p>'+
+          '<textarea id="exText" spellcheck="false"></textarea>'+
+          '<div class="exbar">'+
+            '<button id="copyBtn">要件定義をコピー</button>'+
+            '<button class="ghost" id="dlBtn">テキストで保存</button>'+
+            '<span class="msg" id="copyMsg"></span>'+
+          '</div>'+
+        '</div>'+
       '</div>'+
       '<div class="retry"><button id="retryBtn">もう一度やってみる</button></div>';
+
+    refreshText(r);
+
+    ["fWhat","fWho"].forEach(function(id){
+      document.getElementById(id).addEventListener("input",function(){refreshText(r);});
+    });
+
+    document.getElementById("copyBtn").addEventListener("click",function(){
+      var ta=document.getElementById("exText"), msg=document.getElementById("copyMsg");
+      var done=function(t){msg.textContent=t;setTimeout(function(){msg.textContent="";},2600);};
+      ta.focus();ta.select();
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(ta.value).then(function(){
+          done("コピーしました");
+        }).catch(function(){
+          legacy();
+        });
+      }else{ legacy(); }
+      function legacy(){
+        var ok=false;
+        try{ ok=document.execCommand("copy"); }catch(e){ ok=false; }
+        done(ok?"コピーしました":"全選択しました。Ctrl+C（Macは⌘+C）を押してください");
+      }
+    });
+
+    document.getElementById("dlBtn").addEventListener("click",function(){
+      var ta=document.getElementById("exText");
+      var blob=new Blob([ta.value],{type:"text/plain;charset=utf-8"});
+      var url=URL.createObjectURL(blob);
+      var link=document.createElement("a");
+      link.href=url;link.download="要件定義メモ.txt";
+      document.body.appendChild(link);link.click();
+      document.body.removeChild(link);
+      setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    });
 
     document.getElementById("retryBtn").addEventListener("click",function(){
       answers={};idx=0;render();
