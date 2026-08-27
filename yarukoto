@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タスク＆メモ - DoNote</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans JP"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        /* Checkbox animation */
+        .task-checkbox:checked + .checkbox-custom {
+            background-color: #10b981;
+            border-color: #10b981;
+        }
+        .task-checkbox:checked + .checkbox-custom i {
+            display: block;
+        }
+        /* Fade transitions */
+        .fade-in {
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <!-- Logo & Brand -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+                    <i class="fa-solid fa-check-double text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-tight text-slate-900 dark:text-white">DoNote</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">やること＆アイデア整理</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Stats & Theme Toggle -->
+            <div class="flex items-center gap-3">
+                <!-- Mini Progress Pill (Desktop) -->
+                <div class="hidden md:flex items-center gap-3 bg-slate-100 dark:bg-slate-700/60 px-3 py-1.5 rounded-full text-xs">
+                    <span class="text-slate-500 dark:text-slate-400">本日の進捗</span>
+                    <div class="w-24 bg-slate-200 dark:bg-slate-600 rounded-full h-2 overflow-hidden">
+                        <div id="headerProgressBar" class="bg-emerald-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <span id="headerProgressText" class="font-semibold text-emerald-600 dark:text-emerald-400">0%</span>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-tight text-slate-900 dark:text-white">DoNote</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">やること＆アイデア整理</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Stats & Theme Toggle -->
+            <div class="flex items-center gap-3">
+                <!-- Mini Progress Pill (Desktop) -->
+                <div class="hidden md:flex items-center gap-3 bg-slate-100 dark:bg-slate-700/60 px-3 py-1.5 rounded-full text-xs">
+                    <span class="text-slate-500 dark:text-slate-400">本日の進捗</span>
+                    <div class="w-24 bg-slate-200 dark:bg-slate-600 rounded-full h-2 overflow-hidden">
+                        <div id="headerProgressBar" class="bg-blue-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <span id="headerProgressText" class="font-semibold text-blue-600 dark:text-blue-400">0%</span>
+                </div>
+
+                <!-- Dark Mode Toggle Button -->
+                <button id="themeToggleBtn" title="テーマ切り替え" class="p-2 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-lg text-amber-400"></i>
+                </button>
+
+                <!-- Data Backup / Settings Modal Trigger -->
+                <button id="openSettingsBtn" title="設定・データ" class="p-2 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <i class="fa-solid fa-gear text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 lg:p-8 flex flex-col md:flex-row gap-6">
+
+        <!-- Sidebar Navigation & Filters -->
+        <aside class="w-full md:w-64 flex-shrink-0 space-y-6">
+            <!-- New Item Buttons -->
+            <div class="grid grid-cols-2 md:grid-cols-1 gap-2">
+                <button id="openAddTaskModalBtn" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-md shadow-emerald-500/20 transition active:scale-[0.98]">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>タスクを追加</span>
+                </button>
+                <button id="openAddNoteModalBtn" class="w-full flex items-center justify-center gap-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 font-medium py-2.5 px-4 rounded-xl transition active:scale-[0.98]">
+                    <i class="fa-solid fa-note-sticky"></i>
+                    <span>メモを作成</span>
+                </button>
+            </div>
+
+            <!-- View Switcher (Tasks vs Memos) -->
+            <div class="bg-white dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 flex">
+                <button id="viewTasksTab" class="flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition bg-emerald-600 text-white shadow-sm">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>タスク</span>
+                    <span id="activeTaskBadge" class="bg-white/20 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+                <button id="viewNotesTab" class="flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    <i class="fa-solid fa-sticky-note"></i>
+                    <span>メモ帳</span>
+                    <span id="activeNoteBadge" class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+            </div>
+
+            <!-- Filter Options for Tasks Section -->
+            <div id="taskFiltersSidebar" class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 space-y-4">
+                <h2 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">フィルター</h2>
+                
+                <!-- Status Filter -->
+                <div class="space-y-1">
+                    <button data-filter="all" class="task-status-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-inbox w-4"></i>すべてのタスク</span>
+                        <span id="countAllTasks" class="text-xs opacity-80">0</span>
+                    </button>
+                    <button data-filter="active" class="task-status-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                        <span class="flex items-center gap-2"><i class="fa-regular fa-circle w-4"></i>未完了</span>
+                        <span id="countActiveTasks" class="text-xs opacity-80">0</span>
+                    </button>
+                    <button data-filter="today" class="task-status-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                        <span class="flex items-center gap-2"><i class="fa-regular fa-calendar-check w-4"></i>今日が期限</span>
+                        <span id="countTodayTasks" class="text-xs opacity-80">0</span>
+                    </button>
+                    <button data-filter="completed" class="task-status-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-check w-4"></i>完了済み</span>
+                        <span id="countCompletedTasks" class="text-xs opacity-80">0</span>
+                    </button>
+                </div>
+
+                <hr class="border-slate-100 dark:border-slate-700">
+
+                <!-- Category Filters -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">カテゴリ</h3>
+                    <div id="categoryFilterContainer" class="space-y-1">
+                        <!-- Dynamic Categories -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Filter Sidebar (hidden by default) -->
+            <div id="noteFiltersSidebar" class="hidden bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 space-y-4">
+                <h2 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">メモフィルター</h2>
+                <div class="space-y-1">
+                    <button data-notefilter="all" class="note-filter-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-note-sticky w-4"></i>すべてのメモ</span>
+                        <span id="countAllNotes" class="text-xs opacity-80">0</span>
+                    </button>
+                    <button data-notefilter="pinned" class="note-filter-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-thumbtack w-4"></i>ピン留め済み</span>
+                        <span id="countPinnedNotes" class="text-xs opacity-80">0</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Work Area -->
+        <main class="flex-1 space-y-4 min-w-0">
+
+            <!-- Search Bar & Controls -->
+            <div class="flex flex-col sm:flex-row gap-3 items-center justify-between bg-white dark:bg-slate-800 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <!-- Search Box -->
+                <div class="relative w-full sm:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" placeholder="検索（タスク・メモ名）..." class="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                </div>
+
+                <!-- Sort & View Controls -->
+                <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2">
+                    <span class="text-xs text-slate-500 dark:text-slate-400 hidden lg:inline">並び替え:</span>
+                    <select id="sortSelect" class="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="created-desc">作成日が新しい順</option>
+                        <option value="due-asc">期日が近い順</option>
+                        <option value="priority-desc">優先度が高い順</option>
+                        <option value="title-asc">名前順 (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- TASK SECTION CONTAINER -->
+            <section id="tasksSection" class="space-y-3">
+                <!-- Task Progress Bar Card -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-emerald-500"></i>
+                            <span id="currentFilterLabel">すべてのタスク</span>
+                        </h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5" id="taskSummaryText">読み込み中...</p>
+                    </div>
+                    <div class="w-full sm:w-48 bg-slate-100 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                        <div id="mainProgressBar" class="bg-emerald-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Task List Box -->
+                <div id="taskList" class="space-y-2.5">
+                    <!-- Tasks inserted dynamically -->
+                </div>
+
+                <!-- Empty State for Tasks -->
+                <div id="tasksEmptyState" class="hidden text-center py-12 px-4 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+                    <div class="w-16 h-16 mx-auto mb-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center text-emerald-500">
+                        <i class="fa-regular fa-clipboard text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-1">タスクがありません</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto mb-4">新しいやることを登録して、効率的にタスクを進めましょう。</p>
+                    <button onclick="document.getElementById('openAddTaskModalBtn').click()" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium px-4 py-2 rounded-xl transition">
+                        <i class="fa-solid fa-plus"></i> タスクを作成
+                    </button>
+                </div>
+            </section>
+
+            <!-- MEMO SECTION CONTAINER (Hidden by default) -->
+            <section id="notesSection" class="hidden space-y-3">
+                <div id="notesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Memos inserted dynamically -->
+                </div>
+
+                <!-- Empty State for Notes -->
+                <div id="notesEmptyState" class="hidden text-center py-12 px-4 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+                    <div class="w-16 h-16 mx-auto mb-3 bg-amber-50 dark:bg-amber-900/30 rounded-2xl flex items-center justify-center text-amber-500">
+                        <i class="fa-solid fa-lightbulb text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-1">メモがありません</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto mb-4">アイデアやちょっとした注意事項をメモ残しましょう。</p>
+                    <button onclick="document.getElementById('openAddNoteModalBtn').click()" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium px-4 py-2 rounded-xl transition">
+                        <i class="fa-solid fa-plus"></i> メモを作成
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL: ADD / EDIT TASK -->
+    <div id="taskModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden fade-in">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl max-w-md w-full overflow-hidden max-h-[90vh] flex flex-col">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                <h3 id="taskModalTitle" class="font-bold text-slate-800 dark:text-white text-base">新しいタスクを追加</h3>
+                <button type="button" class="closeTaskModalBtn text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form id="taskForm" class="p-6 space-y-4 overflow-y-auto flex-1">
+                <input type="hidden" id="taskId">
+
+                <!-- Title -->
+                <div>
+                    <label for="taskTitle" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">タスク名 <span class="text-rose-500">*</span></label>
+                    <input type="text" id="taskTitle" required placeholder="例: 企画書の作成、買い出し" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <!-- Details / Memo -->
+                <div>
+                    <label for="taskDescription" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">詳細・メモ</label>
+                    <textarea id="taskDescription" rows="3" placeholder="補足情報やリンクなど..." class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"></textarea>
+                </div>
+
+                <!-- Priority & Category Grid -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="taskPriority" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">優先度</label>
+                        <select id="taskPriority" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="high">高 (優先)</option>
+                            <option value="medium" selected>中 (標準)</option>
+                            <option value="low">低 (低優先)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="taskCategory" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">カテゴリ</label>
+                        <select id="taskCategory" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="仕事">仕事</option>
+                            <option value="プライベート">プライベート</option>
+                            <option value="買い物">買い物</option>
+                            <option value="学習">学習</option>
+                            <option value="健康">健康</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Due Date & Time -->
+                <div>
+                    <label for="taskDueDate" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">期限日</label>
+                    <input type="date" id="taskDueDate" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <!-- Subtasks Input -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">サブタスク（チェックリスト）</label>
+                    <div id="subtasksInputContainer" class="space-y-2 mb-2">
+                        <!-- Dynamic subtask inputs -->
+                    </div>
+                    <button type="button" id="addSubtaskBtn" class="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-medium flex items-center gap-1">
+                        <i class="fa-solid fa-plus text-xs"></i> サブ項目を追加
+                    </button>
+                </div>
+
+                <!-- Submit buttons -->
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-2">
+                    <button type="button" class="closeTaskModalBtn px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        キャンセル
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-500/20 transition">
+                        保存する
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD / EDIT NOTE -->
+    <div id="noteModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden fade-in">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl max-w-md w-full overflow-hidden flex flex-col">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                <h3 id="noteModalTitle" class="font-bold text-slate-800 dark:text-white text-base">新しいメモを追加</h3>
+                <button type="button" class="closeNoteModalBtn text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form id="noteForm" class="p-6 space-y-4">
+                <input type="hidden" id="noteId">
+
+                <!-- Title -->
+                <div>
+                    <label for="noteTitle" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">タイトル <span class="text-rose-500">*</span></label>
+                    <input type="text" id="noteTitle" required placeholder="例: 今週のアイデア、買いたいものリスト" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <!-- Content -->
+                <div>
+                    <label for="noteContent" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">内容</label>
+                    <textarea id="noteContent" rows="5" placeholder="自由に入力してください..." class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"></textarea>
+                </div>
+
+                <!-- Content -->
+                <div>
+                    <label for="noteContent" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">内容</label>
+                    <textarea id="noteContent" rows="5" placeholder="自由に入力してください..." class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                </div>
+
+                <!-- Card Theme Color Selection -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">テーマカラー</label>
+                    <div class="flex items-center gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="noteColor" value="yellow" checked class="peer sr-only">
+                            <span class="w-7 h-7 rounded-full bg-amber-100 border-2 border-amber-300 peer-checked:ring-2 peer-checked:ring-amber-500 block"></span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="noteColor" value="blue" class="peer sr-only">
+                            <span class="w-7 h-7 rounded-full bg-blue-100 border-2 border-blue-300 peer-checked:ring-2 peer-checked:ring-blue-500 block"></span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="noteColor" value="emerald" class="peer sr-only">
+                            <span class="w-7 h-7 rounded-full bg-emerald-100 border-2 border-emerald-300 peer-checked:ring-2 peer-checked:ring-emerald-500 block"></span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="noteColor" value="purple" class="peer sr-only">
+                            <span class="w-7 h-7 rounded-full bg-purple-100 border-2 border-purple-300 peer-checked:ring-2 peer-checked:ring-purple-500 block"></span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="noteColor" value="rose" class="peer sr-only">
+                            <span class="w-7 h-7 rounded-full bg-rose-100 border-2 border-rose-300 peer-checked:ring-2 peer-checked:ring-rose-500 block"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Pin Option -->
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="notePinned" class="rounded text-emerald-600 focus:ring-emerald-500">
+                    <label for="notePinned" class="text-xs text-slate-700 dark:text-slate-300 font-medium">トップにピン留めする</label>
+                </div>
+
+                <!-- Submit buttons -->
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-2">
+                    <button type="button" class="closeNoteModalBtn px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        キャンセル
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-500/20 transition">
+                        保存する
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: SETTINGS & DATA EXPORT/IMPORT -->
+    <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden fade-in">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl max-w-md w-full p-6 space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-blue-500"></i> 設定＆データ管理
+                </h3>
+                <button type="button" id="closeSettingsModalBtn" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Backup & Export -->
+            <div class="space-y-3">
+                <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">データのバックアップ・復元</h4>
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="exportDataBtn" class="flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-medium py-2.5 px-3 rounded-xl transition">
+                        <i class="fa-solid fa-download text-emerald-500"></i>
+                        <span>JSON書き出し</span>
+                    </button>
+                    <label class="flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-medium py-2.5 px-3 rounded-xl transition cursor-pointer">
+                        <i class="fa-solid fa-upload text-teal-500"></i>
+                        <span>JSON読み込み</span>
+                        <input type="file" id="importFileInput" accept=".json" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Clear All Data -->
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-700 space-y-2">
+                <h4 class="text-xs font-bold text-rose-500 uppercase tracking-wider">リセット</h4>
+                <button id="clearAllDataBtn" class="w-full flex items-center justify-center gap-2 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 text-xs font-medium py-2.5 px-3 rounded-xl transition">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span>すべてのデータを消去（初期化）</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // Render Category Filter Buttons
+        function renderCategoryFilters() {
+            const container = document.getElementById('categoryFilterContainer');
+            const categories = ['仕事', 'プライベート', '買い物', '学習', '健康', 'その他'];
+
+            let html = `
+                <button data-cat="all" class="category-btn w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium ${state.categoryFilter === 'all' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50'}">
+                    <span>すべて</span>
+                </button>
+            `;
+
+            categories.forEach(cat => {
+                const isSelected = state.categoryFilter === cat;
+                html += `
+                    <button data-cat="${cat}" class="category-btn w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium ${isSelected ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/20 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50'}">
+                        <span># ${cat}</span>
+                    </button>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Add event listeners
+            container.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.categoryFilter = btn.dataset.cat;
+                    renderCategoryFilters();
+                    renderTasks();
+                });
+            });
+        }
+
+        // Filter and Sort Tasks
+        function getFilteredTasks() {
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            return state.tasks.filter(task => {
+                // Status Filter
+                if (state.taskFilter === 'active' && task.completed) return false;
+                if (state.taskFilter === 'completed' && !task.completed) return false;
+                if (state.taskFilter === 'today' && task.dueDate !== todayStr) return false;
+
+                // Category Filter
+                if (state.categoryFilter !== 'all' && task.category !== state.categoryFilter) return false;
+
+                // Search Query Filter
+                if (state.searchQuery.trim() !== '') {
+                    const q = state.searchQuery.toLowerCase();
+                    const titleMatch = task.title.toLowerCase().includes(q);
+                    const descMatch = (task.description || '').toLowerCase().includes(q);
+                    if (!titleMatch && !descMatch) return false;
+                }
+
+                return true;
+            }).sort((a, b) => {
+                if (state.sortBy === 'due-asc') {
+                    if (!a.dueDate) return 1;
+                    if (!b.dueDate) return -1;
+                    return new Date(a.dueDate) - new Date(b.dueDate);
+                }
+                if (state.sortBy === 'priority-desc') {
+                    const pMap = { high: 3, medium: 2, low: 1 };
+                    return pMap[b.priority] - pMap[a.priority];
+                }
+                if (state.sortBy === 'title-asc') {
+                    return a.title.localeCompare(b.title, 'ja');
+                }
+                // default created-desc
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+        }
+
+        // Render Task List
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            const emptyState = document.getElementById('tasksEmptyState');
+            const filtered = getFilteredTasks();
+
+            // Update Counters
+            const total = state.tasks.length;
+            const completedCount = state.tasks.filter(t => t.completed).length;
+            const activeCount = total - completedCount;
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayCount = state.tasks.filter(t => t.dueDate === todayStr).length;
+
+            document.getElementById('countAllTasks').textContent = total;
+            document.getElementById('countActiveTasks').textContent = activeCount;
+            document.getElementById('countTodayTasks').textContent = todayCount;
+            document.getElementById('countCompletedTasks').textContent = completedCount;
+            document.getElementById('activeTaskBadge').textContent = activeCount;
+
+            // Overall Progress
+            const progressPercent = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+            document.getElementById('headerProgressBar').style.width = `${progressPercent}%`;
+            document.getElementById('headerProgressText').textContent = `${progressPercent}%`;
+            document.getElementById('mainProgressBar').style.width = `${progressPercent}%`;
+
+            // Filter Summary Title
+            const labels = {
+                all: 'すべてのタスク',
+                active: '未完了のタスク',
+                today: '今日が期限のタスク',
+                completed: '完了済みのタスク'
+            };
+            document.getElementById('currentFilterLabel').textContent = labels[state.taskFilter] || 'タスク';
+            document.getElementById('taskSummaryText').textContent = `全 ${filtered.length} 件表示中 （完了: ${completedCount} / ${total}）`;
+
+            if (filtered.length === 0) {
+                taskList.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            taskList.innerHTML = filtered.map(task => {
+                const isOverdue = task.dueDate && task.dueDate < todayStr && !task.completed;
+                const priorityBadges = {
+                    high: '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">優先: 高</span>',
+                    medium: '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300">優先: 中</span>',
+                    low: '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">優先: 低</span>'
+                };
+
+                const subtaskCompleted = task.subtasks ? task.subtasks.filter(s => s.completed).length : 0;
+                const subtaskTotal = task.subtasks ? task.subtasks.length : 0;
+
+                return `
+                    <div class="bg-white dark:bg-slate-800 border ${task.completed ? 'border-slate-200 dark:border-slate-700/60 opacity-60' : 'border-slate-200 dark:border-slate-700'} rounded-2xl p-4 transition-all hover:shadow-md flex flex-col gap-3 group">
+                        <div class="flex items-start justify-between gap-3">
+                            <!-- Custom Checkbox & Task Title -->
+                            <div class="flex items-start gap-3 min-w-0 flex-1">
+                                <label class="relative flex items-center cursor-pointer mt-0.5 select-none">
+                                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTaskStatus('${task.id}')" class="sr-only task-checkbox">
+                                    <div class="checkbox-custom w-5 h-5 rounded-lg border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center text-white transition-all">
+                                        <i class="fa-solid fa-check text-xs hidden"></i>
+                                    </div>
+                                </label>
+
+                                <div class="min-w-0 flex-1">
+                                    <h3 class="font-medium text-sm text-slate-800 dark:text-slate-100 leading-snug ${task.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">
+                                        ${escapeHtml(task.title)}
+                                    </h3>
+                                    ${task.description ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">${escapeHtml(task.description)}</p>` : ''}
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center gap-1 opacity-90 sm:opacity-0 group-hover:opacity-100 transition">
+                                <button onclick="editTask('${task.id}')" title="編集" class="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition text-xs">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="deleteTask('${task.id}')" title="削除" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition text-xs">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Subtasks Progress List if any -->
+                        ${subtaskTotal > 0 ? `
+                            <div class="bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl space-y-1.5 text-xs border border-slate-100 dark:border-slate-700/50">
+                                <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                                    <span>チェックリスト</span>
+                                    <span>${subtaskCompleted} / ${subtaskTotal}</span>
+                                </div>
+                                ${task.subtasks.map(sub => `
+                                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                                        <input type="checkbox" ${sub.completed ? 'checked' : ''} onchange="toggleSubtask('${task.id}', '${sub.id}')" class="rounded text-emerald-600 focus:ring-emerald-500 w-3.5 h-3.5">
+                                        <span class="${sub.completed ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-300'}">${escapeHtml(sub.title)}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+
+                        <!-- Meta Info Footer -->
+                        <div class="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                            ${priorityBadges[task.priority]}
+                            <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"># ${escapeHtml(task.category)}</span>
+                            
+                            ${task.dueDate ? `
+                                <span class="flex items-center gap-1 ${isOverdue ? 'text-rose-600 dark:text-rose-400 font-semibold' : ''}">
+                                    <i class="fa-regular fa-calendar text-[10px]"></i>
+                                    ${task.dueDate} ${isOverdue ? '(期限切れ)' : ''}
+                                </span>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Memos Section
+        function renderNotes() {
+            const notesGrid = document.getElementById('notesGrid');
+            const emptyState = document.getElementById('notesEmptyState');
+
+            let filtered = state.notes.filter(note => {
+                if (state.noteFilter === 'pinned' && !note.pinned) return false;
+                if (state.searchQuery.trim() !== '') {
+                    const q = state.searchQuery.toLowerCase();
+                    const tMatch = note.title.toLowerCase().includes(q);
+                    const cMatch = (note.content || '').toLowerCase().includes(q);
+                    if (!tMatch && !cMatch) return false;
+                }
+                return true;
+            });
+
+            // Always pinned first, then date desc
+            filtered.sort((a, b) => {
+                if (a.pinned !== b.pinned) return b.pinned ? 1 : -1;
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+
+            // Counters
+            document.getElementById('countAllNotes').textContent = state.notes.length;
+            document.getElementById('countPinnedNotes').textContent = state.notes.filter(n => n.pinned).length;
+            document.getElementById('activeNoteBadge').textContent = state.notes.length;
+
+            if (filtered.length === 0) {
+                notesGrid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            const colorClasses = {
+                yellow: 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/50',
+                blue: 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800/50',
+                emerald: 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/50',
+                purple: 'bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800/50',
+                rose: 'bg-rose-50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-800/50'
+            };
+
+            notesGrid.innerHTML = filtered.map(note => `
+                <div class="rounded-2xl border p-4 flex flex-col justify-between gap-3 shadow-sm transition hover:shadow-md ${colorClasses[note.color] || colorClasses.yellow} relative group">
+                    <div class="space-y-2">
+                        <div class="flex items-start justify-between gap-2">
+                            <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                                ${escapeHtml(note.title)}
+                            </h3>
+                            <button onclick="toggleNotePin('${note.id}')" title="${note.pinned ? 'ピン解除' : 'トップに固定'}" class="text-xs p-1 ${note.pinned ? 'text-amber-500' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'}">
+                                <i class="fa-solid fa-thumbtack"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">${escapeHtml(note.content)}</p>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-black/5 dark:border-white/5 text-[11px] text-slate-400">
+                        <span>${new Date(note.createdAt).toLocaleDateString('ja-JP')}</span>
+                        <div class="flex items-center gap-1 opacity-90 sm:opacity-0 group-hover:opacity-100 transition">
+                            <button onclick="editNote('${note.id}')" title="編集" class="p-1 rounded hover:text-blue-600 transition">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteNote('${note.id}')" title="削除" class="p-1 rounded hover:text-rose-600 transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle Task Status
+        window.toggleTaskStatus = function(taskId) {
+            const task = state.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                saveData();
+                renderTasks();
+                showToast(task.completed ? 'タスクを完了にしました！' : 'タスクを未完了に戻しました', 'success');
+            }
+        };
+
+        // Toggle Subtask
+        window.toggleSubtask = function(taskId, subId) {
+            const task = state.tasks.find(t => t.id === taskId);
+            if (task && task.subtasks) {
+                const sub = task.subtasks.find(s => s.id === subId);
+                if (sub) {
+                    sub.completed = !sub.completed;
+                    saveData();
+                    renderTasks();
+                }
+            }
+        };
+
+        // Delete Task
+        window.deleteTask = function(taskId) {
+            state.tasks = state.tasks.filter(t => t.id !== taskId);
+            saveData();
+            renderTasks();
+            showToast('タスクを削除しました');
+        };
+
+        // Edit Task Modal Open
+        window.editTask = function(taskId) {
+            const task = state.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            document.getElementById('taskId').value = task.id;
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDescription').value = task.description || '';
+            document.getElementById('taskPriority').value = task.priority;
+            document.getElementById('taskCategory').value = task.category;
+            document.getElementById('taskDueDate').value = task.dueDate || '';
+
+            // Subtasks populate
+            const container = document.getElementById('subtasksInputContainer');
+            container.innerHTML = '';
+            if (task.subtasks) {
+                task.subtasks.forEach(sub => addSubtaskInputField(sub.title, sub.completed));
+            }
+
+            document.getElementById('taskModalTitle').textContent = 'タスクの編集';
+            document.getElementById('taskModal').classList.remove('hidden');
+        };
+
+        // Add Subtask input row to modal
+        function addSubtaskInputField(title = '', completed = false) {
+            const container = document.getElementById('subtasksInputContainer');
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-2 subtask-row';
+            row.innerHTML = `
+                <input type="checkbox" ${completed ? 'checked' : ''} class="subtask-input-checkbox rounded text-emerald-600 focus:ring-emerald-500">
+                <input type="text" value="${escapeHtml(title)}" placeholder="サブタスク内容..." class="subtask-input-text flex-1 px-2.5 py-1 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg">
+                <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-rose-500 p-1 text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+            container.appendChild(row);
+        }
+
+        document.getElementById('addSubtaskBtn').addEventListener('click', () => {
+            addSubtaskInputField();
+        });
+
+        // Task Form Submit
+        document.getElementById('taskForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const taskId = document.getElementById('taskId').value;
+            const title = document.getElementById('taskTitle').value.trim();
+            const description = document.getElementById('taskDescription').value.trim();
+            const priority = document.getElementById('taskPriority').value;
+            const category = document.getElementById('taskCategory').value;
+            const dueDate = document.getElementById('taskDueDate').value;
+
+            // Gather subtasks
+            const subtaskRows = document.querySelectorAll('.subtask-row');
+            const subtasks = [];
+            subtaskRows.forEach((row, idx) => {
+                const subTitle = row.querySelector('.subtask-input-text').value.trim();
+                const isChecked = row.querySelector('.subtask-input-checkbox').checked;
+                if (subTitle) {
+                    subtasks.push({
+                        id: 'sub-' + Date.now() + '-' + idx,
+                        title: subTitle,
+                        completed: isChecked
+                    });
+                }
+            });
+
+            if (taskId) {
+                // Update
+                const task = state.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.title = title;
+                    task.description = description;
+                    task.priority = priority;
+                    task.category = category;
+                    task.dueDate = dueDate;
+                    task.subtasks = subtasks;
+                }
+                showToast('タスクを更新しました', 'success');
+            } else {
+                // Create
+                const newTask = {
+                    id: 'task-' + Date.now(),
+                    title,
+                    description,
+                    priority,
+                    category,
+                    dueDate,
+                    completed: false,
+                    subtasks,
+                    createdAt: new Date().toISOString()
+                };
+                state.tasks.unshift(newTask);
+                showToast('新しいタスクを追加しました', 'success');
+            }
+
+            saveData();
+            renderTasks();
+            closeTaskModal();
+        });
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').classList.add('hidden');
+            document.getElementById('taskForm').reset();
+            document.getElementById('taskId').value = '';
+            document.getElementById('subtasksInputContainer').innerHTML = '';
+        }
+
+        document.querySelectorAll('.closeTaskModalBtn').forEach(btn => {
+            btn.addEventListener('click', closeTaskModal);
+        });
+
+        document.getElementById('openAddTaskModalBtn').addEventListener('click', () => {
+            document.getElementById('taskModalTitle').textContent = '新しいタスクを追加';
+            document.getElementById('taskForm').reset();
+            document.getElementById('taskId').value = '';
+            document.getElementById('subtasksInputContainer').innerHTML = '';
+            document.getElementById('taskModal').classList.remove('hidden');
+        });
+
+        // Note Actions
+        window.toggleNotePin = function(noteId) {
+            const note = state.notes.find(n => n.id === noteId);
+            if (note) {
+                note.pinned = !note.pinned;
+                saveData();
+                renderNotes();
+            }
+        };
+
+        window.deleteNote = function(noteId) {
+            state.notes = state.notes.filter(n => n.id !== noteId);
+            saveData();
+            renderNotes();
+            showToast('メモを削除しました');
+        };
+
+        window.editNote = function(noteId) {
+            const note = state.notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            document.getElementById('noteId').value = note.id;
+            document.getElementById('noteTitle').value = note.title;
+            document.getElementById('noteContent').value = note.content || '';
+            document.getElementById('notePinned').checked = note.pinned || false;
+
+            const colorRadios = document.querySelectorAll('input[name="noteColor"]');
+            colorRadios.forEach(radio => {
+                radio.checked = radio.value === note.color;
+            });
+
+            document.getElementById('noteModalTitle').textContent = 'メモを編集';
+            document.getElementById('noteModal').classList.remove('hidden');
+        };
+
+        document.getElementById('noteForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const noteId = document.getElementById('noteId').value;
+            const title = document.getElementById('noteTitle').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+            const pinned = document.getElementById('notePinned').checked;
+            const color = document.querySelector('input[name="noteColor"]:checked').value;
+
+            if (noteId) {
+                const note = state.notes.find(n => n.id === noteId);
+                if (note) {
+                    note.title = title;
+                    note.content = content;
+                    note.pinned = pinned;
+                    note.color = color;
+                }
+                showToast('メモを更新しました', 'success');
+            } else {
+                const newNote = {
+                    id: 'note-' + Date.now(),
+                    title,
+                    content,
+                    pinned,
+                    color,
+                    createdAt: new Date().toISOString()
+                };
+                state.notes.unshift(newNote);
+                showToast('新しいメモを追加しました', 'success');
+            }
+
+            saveData();
+            renderNotes();
+            closeNoteModal();
+        });
+
+        function closeNoteModal() {
+            document.getElementById('noteModal').classList.add('hidden');
+            document.getElementById('noteForm').reset();
+            document.getElementById('noteId').value = '';
+        }
+
+        document.querySelectorAll('.closeNoteModalBtn').forEach(btn => {
+            btn.addEventListener('click', closeNoteModal);
+        });
+
+        document.getElementById('openAddNoteModalBtn').addEventListener('click', () => {
+            document.getElementById('noteModalTitle').textContent = '新しいメモを追加';
+            document.getElementById('noteForm').reset();
+            document.getElementById('noteId').value = '';
+            document.getElementById('noteModal').classList.remove('hidden');
+        });
+
+        // Tab Switcher Logic
+        const viewTasksTab = document.getElementById('viewTasksTab');
+        const viewNotesTab = document.getElementById('viewNotesTab');
+        const tasksSection = document.getElementById('tasksSection');
+        const notesSection = document.getElementById('notesSection');
+        const taskFiltersSidebar = document.getElementById('taskFiltersSidebar');
+        const noteFiltersSidebar = document.getElementById('noteFiltersSidebar');
+
+        viewTasksTab.addEventListener('click', () => {
+            state.currentTab = 'tasks';
+            viewTasksTab.className = "flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition bg-emerald-600 text-white shadow-sm";
+            viewNotesTab.className = "flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            
+            tasksSection.classList.remove('hidden');
+            notesSection.classList.add('hidden');
+            taskFiltersSidebar.classList.remove('hidden');
+            noteFiltersSidebar.classList.add('hidden');
+        });
+
+        viewNotesTab.addEventListener('click', () => {
+            state.currentTab = 'notes';
+            viewNotesTab.className = "flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition bg-emerald-600 text-white shadow-sm";
+            viewTasksTab.className = "flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            
+            notesSection.classList.remove('hidden');
+            tasksSection.classList.add('hidden');
+            noteFiltersSidebar.classList.remove('hidden');
+            taskFiltersSidebar.classList.add('hidden');
+        });
+
+        // Filter Buttons Listeners
+        document.querySelectorAll('.task-status-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.task-status-btn').forEach(b => {
+                    b.className = "task-status-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50";
+                });
+                btn.className = "task-status-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30";
+                state.taskFilter = btn.dataset.filter;
+                renderTasks();
+            });
+        });
+
+        document.querySelectorAll('.note-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.note-filter-btn').forEach(b => {
+                    b.className = "note-filter-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50";
+                });
+                btn.className = "note-filter-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30";
+                state.noteFilter = btn.dataset.notefilter;
+                renderNotes();
+            });
+        });
+
+        // Search & Sort Inputs
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            state.searchQuery = e.target.value;
+            renderTasks();
+            renderNotes();
+        });
+
+        document.getElementById('sortSelect').addEventListener('change', (e) => {
+            state.sortBy = e.target.value;
+            renderTasks();
+        });
+
+        // Dark Mode Toggle
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('donote_theme', isDark ? 'dark' : 'light');
+        });
+
+        // Load theme preference
+        if (localStorage.getItem('donote_theme') === 'dark' || (!('donote_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Settings Modal Controls
+        const settingsModal = document.getElementById('settingsModal');
+        document.getElementById('openSettingsBtn').addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+        });
+
+        document.getElementById('closeSettingsModalBtn').addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+        });
+
+        // Export JSON Data
+        document.getElementById('exportDataBtn').addEventListener('click', () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `donote_backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast('データをファイルに保存しました', 'success');
+        });
+
+        // Import JSON Data
+        document.getElementById('importFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const parsed = JSON.parse(event.target.result);
+                    if (parsed.tasks && parsed.notes) {
+                        state.tasks = parsed.tasks;
+                        state.notes = parsed.notes;
+                        saveData();
+                        renderCategoryFilters();
+                        renderTasks();
+                        renderNotes();
+                        settingsModal.classList.add('hidden');
+                        showToast('データを復元しました', 'success');
+                    } else {
+                        showToast('無効なバックアップファイルです', 'error');
+                    }
+                } catch (err) {
+                    showToast('ファイルの読み込みに失敗しました', 'error');
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // Clear All Data
+        document.getElementById('clearAllDataBtn').addEventListener('click', () => {
+            if (window.confirm('すべてのタスクとメモを消去してもよろしいですか？（元に戻せません）')) {
+                state.tasks = [];
+                state.notes = [];
+                saveData();
+                renderTasks();
+                renderNotes();
+                settingsModal.classList.add('hidden');
+                showToast('データをリセットしました');
+            }
+        });
+
+        // App Initializer
+        window.onload = function() {
+            loadData();
+            renderCategoryFilters();
+            renderTasks();
+            renderNotes();
+        };
+    </script>
+</body>
+</html>
