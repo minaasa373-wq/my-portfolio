@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>合氣道の「氣」から学ぶ、感情のコントロール</title>
+<style>
+:root{
+  --moss:#acbc65;
+  --moss-deep:#7d8f45;
+  --moss-pale:#e8eed4;
+  --amber:#fbac33;
+  --yellow:#ffd146;
+  --aqua:#98d5cb;
+  --aqua-pale:#e3f2ef;
+  --grey:#73818d;
+  --ink:#2f3a42;
+  --bg:#fbfaf3;
+  --paper:#ffffff;
+  --rule:#e2ded0;
+  --serif:"Yu Mincho","YuMincho","Hiragino Mincho ProN","Noto Serif JP",serif;
+  --sans:"Yu Gothic","YuGothic","Hiragino Sans","Noto Sans JP",sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:72px;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.9;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+
+/* ---------- hero ---------- */
+.hero{
+  background:linear-gradient(180deg,#f3f5e4 0%,var(--bg) 100%);
+  border-bottom:1px solid var(--rule);
+  padding:56px 0 44px;
+}
+.hero-inner{display:flex;gap:40px;align-items:center;flex-wrap:wrap;}
+.glyph{
+  flex:0 0 auto;
+  width:180px;height:180px;
+  position:relative;
+  display:grid;place-items:center;
+}
+.glyph svg{position:absolute;inset:0;width:100%;height:100%;}
+.glyph span{
+  position:relative;
+  font-family:var(--serif);
+  font-size:104px;
+  line-height:1;
+  color:var(--moss-deep);
+}
+.hero-text{flex:1 1 340px;min-width:280px;}
+.hero-text h1{
+  font-family:var(--serif);
+  font-size:34px;
+  line-height:1.45;
+  margin:0 0 14px;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.hero-text p{margin:0;color:var(--grey);font-size:15px;}
+.hero-meta{
+  margin-top:20px;
+  display:inline-block;
+  border-left:3px solid var(--amber);
+  padding:2px 0 2px 12px;
+  font-size:14px;
+  color:var(--ink);
+}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:20;
+  background:rgba(251,250,243,.94);
+  backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--rule);
+}
+nav ul{
+  list-style:none;margin:0;padding:0;
+  display:flex;gap:4px;overflow-x:auto;
+  max-width:960px;margin:0 auto;padding:0 18px;
+}
+nav a{
+  display:block;white-space:nowrap;
+  padding:14px 10px;
+  font-size:13.5px;
+  color:var(--grey);
+  text-decoration:none;
+  border-bottom:2px solid transparent;
+}
+nav a:hover,nav a:focus-visible{color:var(--moss-deep);border-bottom-color:var(--moss);}
+
+/* ---------- sections ---------- */
+section{padding:52px 0;}
+section+section{border-top:1px solid var(--rule);}
+.sec-head{margin-bottom:26px;}
+.sec-head h2{
+  font-family:var(--serif);
+  font-size:25px;
+  margin:0 0 6px;
+  font-weight:600;
+}
+.sec-head p{margin:0;color:var(--grey);font-size:14px;}
+
+/* ---------- overview cards ---------- */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(258px,1fr));
+  gap:16px;
+}
+.card{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-top:4px solid var(--moss);
+  border-radius:3px;
+  padding:20px 20px 22px;
+}
+.card:nth-child(3n+2){border-top-color:var(--amber);}
+.card:nth-child(3n+3){border-top-color:var(--aqua);}
+.card h3{
+  font-family:var(--serif);
+  font-size:18px;margin:0 0 10px;font-weight:600;
+}
+.card p{margin:0;font-size:14.5px;line-height:1.85;}
+.card .jump{
+  display:inline-block;margin-top:14px;
+  font-size:13px;color:var(--moss-deep);text-decoration:none;
+  border-bottom:1px solid var(--moss);
+}
+.card .jump:hover{color:var(--ink);}
+
+/* ---------- kanji compare ---------- */
+.compare{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  max-width:560px;margin:0 0 24px;
+}
+.compare div{
+  background:var(--paper);border:1px solid var(--rule);border-radius:3px;
+  padding:18px;text-align:center;
+}
+.compare .k{font-family:var(--serif);font-size:56px;line-height:1.1;display:block;}
+.compare .lbl{display:block;font-size:13px;color:var(--grey);margin-top:6px;}
+.compare .meaning{display:block;font-size:14.5px;margin-top:10px;font-weight:600;}
+.compare .out{color:var(--moss-deep);}
+
+/* ---------- detail body ---------- */
+.body-copy{max-width:660px;}
+.body-copy p{margin:0 0 16px;}
+.body-copy p:last-child{margin-bottom:0;}
+.lead{
+  font-family:var(--serif);
+  font-size:19px;line-height:1.85;
+  color:var(--moss-deep);
+  margin:0 0 20px;
+}
+.quote{
+  margin:22px 0;padding:16px 20px;
+  background:var(--moss-pale);
+  border-radius:3px;
+  font-family:var(--serif);
+  font-size:17px;
+}
+.note{
+  margin:24px 0 0;padding:14px 18px;
+  background:var(--aqua-pale);
+  border-left:3px solid var(--aqua);
+  font-size:14px;line-height:1.8;
+}
+.note strong{display:block;margin-bottom:4px;}
+.note a{color:var(--moss-deep);word-break:break-all;}
+
+/* ---------- flow ---------- */
+.flow{
+  display:flex;align-items:stretch;gap:0;flex-wrap:wrap;
+  margin:24px 0;
+}
+.flow .step{
+  flex:1 1 180px;
+  background:var(--paper);border:1px solid var(--rule);
+  padding:16px 18px;font-size:14.5px;line-height:1.75;
+}
+.flow .step b{display:block;font-family:var(--serif);font-size:16px;margin-bottom:6px;}
+.flow .arrow{
+  flex:0 0 34px;display:grid;place-items:center;
+  color:var(--amber);font-size:20px;
+}
+
+/* ---------- vs table ---------- */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0;}
+.vs > div{border:1px solid var(--rule);border-radius:3px;padding:18px;background:var(--paper);}
+.vs .bad{border-top:4px solid #d98b6a;}
+.vs .good{border-top:4px solid var(--moss);}
+.vs h4{margin:0 0 10px;font-size:15.5px;font-family:var(--serif);}
+.vs ul{margin:0;padding-left:1.1em;font-size:14px;line-height:1.8;}
+
+/* ---------- steps ---------- */
+.steps{counter-reset:s;margin:22px 0 0;padding:0;list-style:none;}
+.steps li{
+  counter-increment:s;
+  position:relative;
+  padding:0 0 24px 52px;
+  border-left:2px solid var(--moss-pale);
+  margin-left:15px;
+}
+.steps li:last-child{border-left-color:transparent;padding-bottom:0;}
+.steps li::before{
+  content:counter(s);
+  position:absolute;left:-16px;top:0;
+  width:30px;height:30px;border-radius:50%;
+  background:var(--moss);color:#fff;
+  display:grid;place-items:center;
+  font-size:14px;font-weight:700;
+}
+.steps h4{margin:2px 0 8px;font-size:17px;font-family:var(--serif);}
+.steps p{margin:0 0 8px;font-size:14.5px;}
+.steps .eg{
+  display:inline-block;background:var(--yellow);
+  padding:3px 10px;border-radius:2px;font-size:13.5px;
+}
+
+/* ---------- closing ---------- */
+.closing{background:#f3f5e4;border-top:1px solid var(--rule);}
+.closing .body-copy{max-width:700px;}
+.arc{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  margin:24px 0 0;font-family:var(--serif);font-size:20px;
+}
+.arc span{background:var(--paper);border:1px solid var(--moss);padding:10px 22px;border-radius:3px;}
+.arc em{font-style:normal;color:var(--amber);font-size:22px;}
+
+footer{padding:30px 0 46px;font-size:13px;color:var(--grey);}
+
+@media(max-width:640px){
+  .hero{padding:36px 0 30px;}
+  .hero-inner{gap:24px;}
+  .glyph{width:120px;height:120px;}
+  .glyph span{font-size:70px;}
+  .hero-text h1{font-size:26px;}
+  .compare,.vs{grid-template-columns:1fr;}
+  .flow .arrow{flex:1 1 100%;height:28px;transform:rotate(90deg);}
+  section{padding:40px 0;}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <div class="glyph" aria-hidden="true">
+      <svg viewBox="0 0 180 180">
+        <g stroke="#acbc65" stroke-width="1.2" opacity=".55">
+          <line x1="90" y1="90" x2="90" y2="8"/>
+          <line x1="90" y1="90" x2="90" y2="172"/>
+          <line x1="90" y1="90" x2="8" y2="90"/>
+          <line x1="90" y1="90" x2="172" y2="90"/>
+          <line x1="90" y1="90" x2="32" y2="32"/>
+          <line x1="90" y1="90" x2="148" y2="32"/>
+          <line x1="90" y1="90" x2="32" y2="148"/>
+          <line x1="90" y1="90" x2="148" y2="148"/>
+        </g>
+        <circle cx="90" cy="90" r="66" fill="none" stroke="#fbac33" stroke-width="1.2" opacity=".7"/>
+      </svg>
+      <span>氣</span>
+    </div>
+    <div class="hero-text">
+      <h1>合氣道の「氣」から学ぶ、<br>感情のコントロール</h1>
+      <p>頭で理屈をつけても、心には勝てません。だから、心のほうに働きかける。<br>合氣道の稽古で使っている考え方を、日常と課題に持ち帰るための一枚です。</p>
+      <div class="hero-meta">DXコース フィードバックタイム／南 旭</div>
+    </div>
+  </div>
+</header>
+
+<nav aria-label="目次">
+  <ul>
+    <li><a href="#overview">要点</a></li>
+    <li><a href="#ki">「氣」という字</a></li>
+    <li><a href="#kokoro">心が体を動かす</a></li>
+    <li><a href="#mirai">未来に氣を向ける</a></li>
+    <li><a href="#process">結果よりプロセス</a></li>
+    <li><a href="#yoyu">余裕を持つ</a></li>
+    <li><a href="#howto">具体的にどうするか</a></li>
+    <li><a href="#hikaku">比較について</a></li>
+    <li><a href="#positive">氣を出す＝行動する</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="overview">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>今日の要点</h2>
+      <p>6つだけ持ち帰っていただければ十分です。</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <h3>氣は「出す」もの</h3>
+        <p>合氣道の「氣」は、中が「米」。八方に広がるという意味です。氣は溜めるものではなく、出すもの。「生きるとは氣を出すこと」だと教わりました。</p>
+        <a class="jump" href="#ki">くわしく</a>
+      </div>
+      <div class="card">
+        <h3>心が体を動かす</h3>
+        <p>行動の前に、必ず心が動いています。頭でどれだけ理屈をつけても、心が「やりたくない」と言えばそちらが勝つ。だから頭ではなく心に働きかけます。</p>
+        <a class="jump" href="#kokoro">くわしく</a>
+      </div>
+      <div class="card">
+        <h3>未来に氣を向ける</h3>
+        <p>やった先に何が起きるかを妄想して、そのときの気分をリアルに味わう。面倒くさいという今の感情が、ワクワクに置き換わります。</p>
+        <a class="jump" href="#mirai">くわしく</a>
+      </div>
+      <div class="card">
+        <h3>結果よりプロセス</h3>
+        <p>結果を褒められた子は難問で諦め、努力を褒められた子は諦めなかった。結果は行動した結果でしかありません。取り組んでいること自体に価値があります。</p>
+        <a class="jump" href="#process">くわしく</a>
+      </div>
+      <div class="card">
+        <h3>余裕がないと氣は出ない</h3>
+        <p>切羽詰まると緊張して氣が滞り、気配りができなくなります。車間距離と同じで、予定は7割で組む。余裕は感情コントロールの土台です。</p>
+        <a class="jump" href="#yoyu">くわしく</a>
+      </div>
+      <div class="card">
+        <h3>不利な比較をやめる</h3>
+        <p>相手の完成品と、まだできていない自分を比べていませんか。比べるなら条件を揃えて、優劣を決めるためではなく、やり方を盗むために。</p>
+        <a class="jump" href="#hikaku">くわしく</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ki">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>「氣」という字の話</h2>
+      <p>同じ「き」でも、中身が違います。</p>
+    </div>
+    <div class="compare">
+      <div>
+        <span class="k">気</span>
+        <span class="lbl">空気の「気」／中は〆</span>
+        <span class="meaning">出さないようにする</span>
+      </div>
+      <div>
+        <span class="k out">氣</span>
+        <span class="lbl">合氣道の「氣」／中は米</span>
+        <span class="meaning out">八方に広がる＝出すもの</span>
+      </div>
+    </div>
+    <div class="body-copy">
+      <p>合氣道は、名前のとおり真ん中に「氣」が入っています。普段使う「空気」の「気」は真ん中が「〆」で、出さないようにするという意味合い。合氣道の「氣」は真ん中が「米」で、八方に広がる。つまり氣は、出すものなんですね。</p>
+      <div class="quote">生きるとは、氣を出すこと。<br><span style="font-size:14px;font-family:var(--sans);color:var(--grey);">——師匠の言葉</span></div>
+      <p>合氣道をやる上でも、日常生活を送る上でも、氣を出すことは生きるのと同じくらい大事なんだよ、と教わってきました。今日はその「氣」を、どう日常に活かすかという話です。</p>
+    </div>
+  </div>
+</section>
+
+<section id="kokoro">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>大原則「心が体を動かす」</h2>
+      <p>不自由だな、動けないな、と感じたときに効く考え方です。</p>
+    </div>
+    <div class="body-copy">
+      <p class="lead">行動の前には、必ず心が動いている。</p>
+      <p>皆さん、今日このZoomに参加しようと思ったから、朝パソコンを立ち上げて参加されていますよね。はっと気づいたらいきなり参加していた、ということはまずないはずです。心が動いてから、体の行動に移る。これが大前提です。</p>
+      <p>そのうえで、私たちは感情に囚われやすい。感情に囚われると、何のためにやっているのかという大事なことが見えなくなってしまいます。</p>
+    </div>
+    <div class="flow">
+      <div class="step"><b>頭</b>勉強しなきゃいけない。赤点は困る。理屈は完璧。</div>
+      <div class="arrow" aria-hidden="true">▶</div>
+      <div class="step"><b>心</b>でも、やりたくない。</div>
+      <div class="arrow" aria-hidden="true">▶</div>
+      <div class="step"><b>行動</b>なぜか部屋の掃除を始めてしまう。</div>
+    </div>
+    <div class="body-copy">
+      <p>テスト前に掃除を始めてしまう、あれです。頭でどんなに理屈をつけても、心のほうが強い。だから、アプローチする先を間違えてはいけません。</p>
+    </div>
+  </div>
+</section>
+
+<section id="mirai">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>未来に氣を向ける</h2>
+      <p>心に働きかける、具体的なやり方。</p>
+    </div>
+    <div class="body-copy">
+      <p>今は「勉強したくない」という感情にフォーカスしてしまっている。それは事実です。でも、この先、未来に氣を向けると、感情は非常に動きやすいんですね。</p>
+      <p>具体的に言うと、妄想します。「今勉強して、いい点が取れたらどうなるかな」と。先生に褒められるかもしれない。友達から「今回やるやん」と言われるかもしれない。前から欲しかったゲームを買ってもらえるかもしれない。</p>
+      <div class="quote">大事なのは、そのときの気分をリアルに味わうように想像すること。<br>言葉だけでは動きません。</div>
+      <p>ワクワクしてくると、「掃除なんかしている場合じゃない」となる。その瞬間、面倒くさい気持ちは消えています。そのワクワクを感じたいから動くわけです。これが、心に対するアプローチのひとつです。</p>
+      <div class="note">
+        <strong>参考図書</strong>
+        池田貴将『未来記憶』／コーチングの本です。以前から何度も読み返しています。
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>結果ではなく、プロセスにフォーカスする</h2>
+      <p>スタンフォード大学の、褒め方の研究から。</p>
+    </div>
+    <div class="body-copy">
+      <p>子どもたちを2つのグループに分け、同じテストを受けさせます。結果が出たとき、片方には点数を褒め、もう片方には勉強した過程を褒める。そのあと、より難しい問題を出しました。</p>
+    </div>
+    <div class="vs">
+      <div class="bad">
+        <h4>結果を褒められたグループ</h4>
+        <ul>
+          <li>「いい点取ったね」「頭がいいね」</li>
+          <li>結果が出せないことは、やらないほうがいい</li>
+          <li>難しい問題で諦める子が多かった</li>
+        </ul>
+      </div>
+      <div class="good">
+        <h4>過程を褒められたグループ</h4>
+        <ul>
+          <li>「頑張ったんだね」</li>
+          <li>取り組むこと自体がすでに価値になっている</li>
+          <li>難しくても諦めずに取り組んだ</li>
+        </ul>
+      </div>
+    </div>
+    <div class="body-copy">
+      <p>能力を褒めると成績はむしろ下がり、努力を褒めると上がった、という結果まで出ています。</p>
+      <p class="lead">「わからない」という状態を、キープしたまま動けるか。</p>
+      <p>誰でも、わからない状態はストレスです。大事なのは、その状態をなくすことではなく、抱えたまま行動できるかどうか。耐えられないと、諦めたり動けなくなったりします。でも、やっていること自体が偉いんです。結果というのは、行動した結果でしかないので。</p>
+      <div class="note">
+        <strong>出典</strong>
+        『正しいほめ方!?』スタンフォード大学の研究から分かった子どもの成績が変わるほめ方とは!（子育て勉強会TERU／Yahoo!ニュース エキスパート）<br>
+        <a href="https://news.yahoo.co.jp/expert/articles/2fd85e0b0adc594fcc920436efaef6cbc4511c39">https://news.yahoo.co.jp/expert/articles/2fd85e0b0adc594fcc920436efaef6cbc4511c39</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="yoyu">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>余裕を持つ ——『渋滞学』の話</h2>
+      <p>リラックスしていないと、氣は出せません。</p>
+    </div>
+    <div class="body-copy">
+      <p>「何のためにやっているんだったか」を確認するのは、実は時間がかかります。落ち着いて考える時間は、意識して取らないと取れません。妻は昔、「一人会議したい」と言ってミスドに2時間ほど出かけ、ノートに書き出して頭を整理していました。あれはとても大事なことだと思っています。</p>
+      <p>日々忙しくしていると、<strong>重要なんだけど緊急じゃないこと</strong>が後回しになります。そして「大事なんだけど、暇がないから結局やらなかった」となる。</p>
+    </div>
+    <div class="flow">
+      <div class="step"><b>予定を詰める</b>車間距離を空けずに走るのと同じ状態。</div>
+      <div class="arrow" aria-hidden="true">▶</div>
+      <div class="step"><b>一つ狂うと全部詰まる</b>予定の交通渋滞。睡眠時間が削られる。</div>
+      <div class="arrow" aria-hidden="true">▶</div>
+      <div class="step"><b>氣が滞る</b>緊張して氣が配れず、気づけない、慌てる、細部に囚われる。</div>
+    </div>
+    <div class="body-copy">
+      <div class="quote">予定は7割で組む。車間距離を空ける。</div>
+      <p>感情をコントロールするための土台は、根性ではなく余裕です。</p>
+    </div>
+  </div>
+</section>
+
+<section id="howto">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>具体的にどうするか</h2>
+      <p>課題に取り組むときの、3つの手順。</p>
+    </div>
+    <ol class="steps">
+      <li>
+        <h4>使える時間を書き出す</h4>
+        <p>1週間でこの課題にどれだけ時間が取れるか、実際に書き出してみてください。1日2時間なら、1週間で14時間。それが自分の持ち時間です。</p>
+        <p>そして、その2時間以外——1日で言えば残りの22時間は、課題のことを忘れてください。どうせできない時間に「やらなきゃ」と思いながら過ごすほうが、精神的に悪影響が出ます。</p>
+      </li>
+      <li>
+        <h4>やるタイミングを「行動の後」に置く</h4>
+        <p>忘れてしまうのが心配な方は、タイミングを決めます。ただし「夜やる」ではなく、ある行動の後、と決めてください。</p>
+        <span class="eg">歯磨きをしたら、パソコンを開く</span>
+      </li>
+      <li>
+        <h4>ミニゴールを小さく置く</h4>
+        <p>「夜ご飯を食べたら課題をやる」ではダメです。大きすぎる。どこまでやるのか決まっていないと、それだけで面倒くさくなります。</p>
+        <span class="eg">夜ご飯を食べたら、ノートパソコンを机に置いてスイッチを入れる</span>
+        <p style="margin-top:10px;">スイッチを入れたら、「とりあえずちょっとやろうかな」となるものです。そこまでで、もうミニゴール達成です。</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="hikaku">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>比較について</h2>
+      <p>シェアボードを見て、不安になってしまう方へ。</p>
+    </div>
+    <div class="body-copy">
+      <p>人と比べること自体をおすすめしているわけではありません。ただ、人間はどうしても比べてしまうので、どうせ比べるなら条件を揃えて、学ぶために比べましょう、という話です。</p>
+    </div>
+    <div class="vs">
+      <div class="bad">
+        <h4>不利な比較</h4>
+        <ul>
+          <li>相手の完成品 × まだできていない自分</li>
+          <li>週末しか触れない人 × 毎日触れる人の完成品を、優劣で見る</li>
+          <li>比べた結果、手が止まる</li>
+        </ul>
+      </div>
+      <div class="good">
+        <h4>学ぶための比較</h4>
+        <ul>
+          <li>相手の完成品 × 自分の完成品</li>
+          <li>「この部分どうやったんだろう」と分解して見る</li>
+          <li>比べた結果、質問が生まれる</li>
+        </ul>
+      </div>
+    </div>
+    <div class="body-copy">
+      <p>相手の完成品は、試行錯誤した時間、作業時間、失敗した回数、環境が組み合わさってでき上がったものです。ぱっと一発でできたわけではありません。こちらからはその過程が見えないので、ぱっと見のクオリティだけで判断してしまいがちなんですね。</p>
+      <p>作業時間が違えばクオリティに差が出るのは当たり前です。それは能力の差ではなく、条件の差。だったら、「自分のできる範囲で、時間の使い方をどう変えて、何を質問して取り入れようか」と考えるほうがずっと建設的です。</p>
+      <div class="quote">周りに100人以上、自分のために情報をくれている人がいます。<br>どんどん見て、どんどん聞いてください。質問は禁止ではありません。</div>
+      <p>ちなみに、僕がアプリを作って「すごいの作りましたね」と言われたときに、「いやー、スティーブ・ジョブズのほうがすごいので」と返したら、どう思います?「なんでそこと比較してるの」と思いますよね。比較する相手は、選んでいいんです。</p>
+    </div>
+  </div>
+</section>
+
+<section id="positive">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>「氣を出す」とは行動すること</h2>
+      <p>正しいポジティブシンキングとは何か。</p>
+    </div>
+    <div class="body-copy">
+      <p>世の中には、間違ったポジティブシンキングが結構あります。車をぶつけてしまったときに「怪我がなくて良かったね」と考える。分からなくはないんですが、事故自体はマイナスの出来事で、それが消えるわけではありません。</p>
+      <p class="lead">痛かったことを「痛くない」と考えるのは、ポジティブではなく現実逃避です。</p>
+      <p>氣を出すというのは、そうではありません。マイナスの事実を<strong>一旦そのまま受け入れて</strong>、そこから「よし、次どうしよう」と一歩踏み出すこと。これが、氣が出ている状態です。</p>
+    </div>
+    <div class="vs">
+      <div class="bad">
+        <h4>氣が止まっている</h4>
+        <ul>
+          <li>「困った、困った」で立ち止まる</li>
+          <li>「いや、私は困っていないから」と目をそらす</li>
+          <li>どちらも、現実は何も変わらない</li>
+        </ul>
+      </div>
+      <div class="good">
+        <h4>氣が出ている</h4>
+        <ul>
+          <li>「困っているんだよね」と認める</li>
+          <li>「で、何から手をつけようかな」と考える</li>
+          <li>先に、未来に氣が向いている</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>おわりに</h2>
+    </div>
+    <div class="body-copy">
+      <p>人間は感情の生き物ですから、振り回されるのは当たり前です。でも、感情のコントロールは根性論ではありません。具体的な一つ一つの行動を積み重ねていくと、できるようになっていくことです。</p>
+      <p>柔軟体操も、1回やってぐにゃぐにゃになる人はいませんよね。繰り返すうちに体に染み付いてきて、考え方としても染み付いてくる。合氣道でも、初心者はまず意識して「氣を出す」ところから始めて、稽古を重ねるうちに、無意識に「氣が出ている」状態へ移っていきます。</p>
+    </div>
+    <div class="arc">
+      <span>氣を出す</span>
+      <em aria-hidden="true">▶</em>
+      <span>氣が出ている</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    DXコース フィードバックタイム資料／南 旭
+  </div>
+</footer>
+
+</body>
+</html>
