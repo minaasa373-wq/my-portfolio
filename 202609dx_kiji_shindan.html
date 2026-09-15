@@ -1,0 +1,809 @@
+<title>記事のたね診断</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=M+PLUS+1+Code:wght@400&display=swap">
+<style>
+:root{
+  --washi:#f7f5ec;
+  --washi-2:#f1eee1;
+  --sumi:#2b332a;
+  --sumi-soft:#6d786a;
+  --sumi-faint:#9aa396;
+  --rule:#ddd8c4;
+  --rule-soft:#e8e4d5;
+  --moss:#acbc65;
+  --moss-deep:#67762f;
+  --amber:#fbac33;
+  --amber-deep:#9d6407;
+  --yellow:#ffd146;
+  --aqua:#98d5cb;
+  --aqua-deep:#3a7d73;
+  --cell:rgba(172,188,101,.55);
+  --panel:#232a22;
+  --panel-ink:#eeead9;
+  --panel-soft:#98a394;
+  --panel-rule:#3b453a;
+  --measure:38rem;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --washi:#1a1f19;
+  --washi-2:#222821;
+  --sumi:#ece8da;
+  --sumi-soft:#9ba694;
+  --sumi-faint:#79836f;
+  --rule:#333c31;
+  --rule-soft:#2b332a;
+  --moss:#bccb7e;
+  --moss-deep:#cbda94;
+  --amber:#fdbe5c;
+  --amber-deep:#ffd48f;
+  --yellow:#ffdc73;
+  --aqua:#a8ded5;
+  --aqua-deep:#9fd8cc;
+  --cell:rgba(188,203,126,.32);
+  --panel:#12160f;
+  --panel-ink:#e7e2d2;
+  --panel-soft:#8b9585;
+  --panel-rule:#2b332a;
+}}
+:root[data-theme="dark"]{
+  --washi:#1a1f19;
+  --washi-2:#222821;
+  --sumi:#ece8da;
+  --sumi-soft:#9ba694;
+  --sumi-faint:#79836f;
+  --rule:#333c31;
+  --rule-soft:#2b332a;
+  --moss:#bccb7e;
+  --moss-deep:#cbda94;
+  --amber:#fdbe5c;
+  --amber-deep:#ffd48f;
+  --yellow:#ffdc73;
+  --aqua:#a8ded5;
+  --aqua-deep:#9fd8cc;
+  --cell:rgba(188,203,126,.32);
+  --panel:#12160f;
+  --panel-ink:#e7e2d2;
+  --panel-soft:#8b9585;
+  --panel-rule:#2b332a;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--washi);
+  color:var(--sumi);
+  font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  font-size:16px;
+  line-height:2;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{
+  font-family:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  font-weight:700;line-height:1.55;margin:0;text-wrap:balance;
+}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:none;padding:0}
+:focus-visible{outline:2px solid var(--amber);outline-offset:4px}
+
+.page{max-width:46rem;margin:0 auto;padding-inline:22px;padding-block:0 76px}
+
+/* ---------- latin labels ---------- */
+.lat{
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-weight:300;font-style:italic;
+  letter-spacing:.06em;color:var(--sumi-soft);
+  font-size:1.02rem;line-height:1.4;
+}
+.lat-cap{
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-weight:400;font-style:normal;
+  text-transform:uppercase;letter-spacing:.28em;
+  font-size:.72rem;color:var(--moss-deep);
+}
+
+/* ---------- hero ---------- */
+.hero{padding-block:64px 44px}
+.hero .lat-cap{display:block;margin-bottom:26px}
+.hero h1{
+  font-size:clamp(2.1rem,7.4vw,3.4rem);
+  letter-spacing:.04em;line-height:1.42;
+}
+.hero h1 em{
+  font-style:normal;position:relative;
+}
+.hero h1 em::after{
+  content:'';position:absolute;left:-.06em;right:-.06em;bottom:.06em;height:.42em;
+  background:var(--yellow);opacity:.55;z-index:-1;
+}
+.hero .lede{
+  margin-top:26px;max-width:var(--measure);
+  color:var(--sumi-soft);font-size:.95rem;line-height:2.1;
+}
+.rule{height:1px;background:var(--rule);border:0;margin:0}
+
+/* ---------- 原稿用紙 cells ---------- */
+.genko{margin-block:46px 30px}
+.cells{display:flex;gap:0;border:1px solid var(--cell);width:max-content;max-width:100%}
+.cells .c{
+  width:clamp(30px,8.4vw,46px);aspect-ratio:1;flex:none;
+  border-right:1px solid var(--cell);
+  display:grid;place-items:center;
+  font-family:"Zen Old Mincho",serif;font-weight:700;
+  font-size:clamp(1.05rem,3.4vw,1.5rem);
+  color:var(--sumi);position:relative;
+}
+.cells .c:last-child{border-right:0}
+.cells .c::before{
+  content:'';position:absolute;left:50%;top:14%;bottom:14%;width:1px;
+  background:var(--cell);opacity:.42;
+}
+.cells .c.on::before{opacity:0}
+.cellcap{margin-top:14px;color:var(--sumi-faint);font-size:.8rem;letter-spacing:.04em}
+
+/* ---------- entry ---------- */
+.entry{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;margin-top:6px}
+#themeInput{
+  flex:1 1 14rem;min-width:0;font:inherit;font-size:1.12rem;color:var(--sumi);
+  font-family:"Zen Old Mincho",serif;
+  background:transparent;border:0;border-bottom:1.5px solid var(--rule);
+  padding:9px 2px;line-height:1.7;border-radius:0;
+}
+#themeInput::placeholder{color:var(--sumi-faint);font-family:"Zen Kaku Gothic New",sans-serif;font-size:.92rem;opacity:1}
+#themeInput:focus{outline:none;border-bottom-color:var(--moss)}
+.cta{
+  flex:0 0 auto;background:var(--amber);color:#2b332a;font-weight:500;
+  padding:12px 30px;letter-spacing:.14em;font-size:.88rem;
+  border-radius:2px;transition:transform .14s ease,filter .14s ease;
+}
+.cta:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.cta:active{transform:translateY(0)}
+
+.chips{display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;margin-top:24px}
+.chips .lat{font-size:.86rem}
+.chip{
+  font-size:.9rem;color:var(--sumi-soft);
+  border-bottom:1px solid var(--rule);padding-bottom:2px;transition:.14s ease;
+}
+.chip:hover{color:var(--moss-deep);border-bottom-color:var(--moss)}
+
+.gets{margin-top:52px;border-top:1px solid var(--rule);padding-top:26px;display:grid;gap:20px;grid-template-columns:repeat(3,1fr)}
+@media (max-width:620px){.gets{grid-template-columns:1fr;gap:16px}}
+.get .lat{font-size:1.5rem;color:var(--moss);display:block;line-height:1}
+.get p{margin-top:8px;font-size:.86rem;line-height:1.85;color:var(--sumi-soft)}
+.get p b{color:var(--sumi);font-weight:500}
+
+/* ---------- questions ---------- */
+.qhead{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;padding-block:34px 0}
+.themetag{font-size:.86rem;color:var(--sumi-soft);letter-spacing:.04em}
+.themetag b{font-family:"Zen Old Mincho",serif;color:var(--sumi);font-size:1rem;margin-left:8px}
+.cells.mini{border-color:var(--rule)}
+.cells.mini .c{width:19px;aspect-ratio:1;border-right-color:var(--rule);cursor:pointer}
+.cells.mini .c::before{display:none}
+.cells.mini .c[data-s="done"]{background:var(--moss)}
+.cells.mini .c[data-s="now"]{background:var(--amber)}
+.cells.mini .c:disabled{cursor:default}
+
+.qbody{padding-block:40px 0}
+.qnum{font-family:"Cormorant Garamond",Georgia,serif;font-size:2.4rem;font-weight:300;line-height:1;color:var(--moss);letter-spacing:.02em}
+.qnum span{font-size:1.1rem;color:var(--sumi-faint);margin-left:4px}
+.qtext{font-size:clamp(1.3rem,4.6vw,1.85rem);margin-top:18px;letter-spacing:.02em;max-width:var(--measure)}
+.qsub{margin-top:16px;color:var(--sumi-soft);font-size:.88rem;line-height:2;max-width:var(--measure)}
+
+.choices{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--rule)}
+@media (max-width:600px){.choices{grid-template-columns:1fr}}
+.choice{
+  text-align:left;padding:24px 22px 26px;border-bottom:1px solid var(--rule);
+  position:relative;transition:background .16s ease;
+}
+.choice + .choice{border-left:1px solid var(--rule)}
+@media (max-width:600px){.choice + .choice{border-left:0}}
+.choice::after{
+  content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;
+  transform:scaleX(0);transform-origin:left;transition:transform .22s ease;
+}
+.choice[data-a="yes"]::after{background:var(--moss)}
+.choice[data-a="no"]::after{background:var(--aqua)}
+.choice:hover{background:var(--washi-2)}
+.choice:hover::after{transform:scaleX(1)}
+.choice .k{font-family:"Zen Old Mincho",serif;font-size:1.35rem;display:block;letter-spacing:.1em}
+.choice .w{display:block;margin-top:10px;font-size:.82rem;color:var(--sumi-soft);line-height:1.85}
+.back{margin-top:28px;font-size:.85rem;color:var(--sumi-faint);border-bottom:1px solid transparent}
+.back:hover{color:var(--sumi);border-bottom-color:var(--rule)}
+
+/* ---------- result ---------- */
+.verdict{
+  padding-block:44px 0;
+  display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:start;
+}
+.vlabel{
+  writing-mode:vertical-rl;
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-style:italic;font-weight:400;font-size:1.05rem;
+  letter-spacing:.26em;line-height:1;
+  color:var(--sumi-faint);padding-left:18px;border-left:1px solid var(--rule);
+  min-height:8.5rem;
+}
+@media (max-width:600px){
+  .verdict{grid-template-columns:1fr;gap:14px}
+  .vlabel{writing-mode:horizontal-tb;border-left:0;padding-left:0;min-height:0;border-bottom:1px solid var(--rule);padding-bottom:10px}
+}
+.verdict .themetag{display:block;margin-bottom:14px}
+.typename{font-size:clamp(1.85rem,6.4vw,2.9rem);letter-spacing:.04em}
+.typeline{margin-top:20px;max-width:var(--measure);color:var(--sumi-soft);font-size:.93rem;line-height:2.1}
+
+.sec{margin-top:56px}
+.sec > header{display:flex;align-items:baseline;gap:14px;padding-bottom:11px;border-bottom:1px solid var(--sumi);margin-bottom:22px}
+.sec > header h3{font-size:1.06rem;letter-spacing:.06em}
+.sec > header .lat-cap{margin-left:auto}
+
+dl.spec{margin:0}
+dl.spec > div{display:grid;grid-template-columns:8.5rem 1fr;gap:0 18px;padding:13px 0;border-bottom:1px solid var(--rule-soft)}
+dl.spec dt{margin:0;font-size:.78rem;letter-spacing:.06em;color:var(--sumi-faint);line-height:2.3}
+dl.spec dd{margin:0;font-size:.93rem;line-height:1.95}
+@media (max-width:560px){
+  dl.spec > div{grid-template-columns:1fr;gap:2px;padding:12px 0}
+  dl.spec dt{line-height:1.6}
+}
+
+ol.titles{list-style:none;margin:0;padding:0}
+ol.titles li{display:grid;grid-template-columns:auto 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+ol.titles .n{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:300;font-size:1.3rem;color:var(--moss);line-height:1.5}
+ol.titles .t{font-family:"Zen Old Mincho",serif;font-size:1.02rem;line-height:1.75}
+
+ol.outline{list-style:none;margin:0;padding:0;counter-reset:o}
+ol.outline li{display:grid;grid-template-columns:auto 1fr;gap:16px;padding:15px 0;border-bottom:1px solid var(--rule-soft)}
+ol.outline li:last-child{border-bottom:0}
+ol.outline li::before{
+  counter-increment:o;content:counter(o,decimal-leading-zero);
+  font-family:"Cormorant Garamond",serif;font-weight:300;font-size:1.15rem;
+  color:var(--moss);line-height:1.7;
+}
+ol.outline .oh{font-weight:500;line-height:1.8}
+ol.outline .od{margin-top:3px;font-size:.82rem;color:var(--sumi-soft);line-height:1.85}
+
+/* ---------- prompt panel ---------- */
+.brief{background:var(--panel);border-radius:3px;overflow:hidden;position:relative}
+.briefbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--panel-rule)}
+.briefbar .lat-cap{color:var(--panel-soft)}
+.copy{
+  background:var(--amber);color:#232a22;font-weight:500;font-size:.82rem;
+  padding:8px 20px;border-radius:2px;letter-spacing:.1em;transition:filter .14s ease;
+}
+.copy:hover{filter:brightness(1.06)}
+.copy[data-done="1"]{background:var(--moss)}
+pre.brieftext{
+  margin:0;padding:22px 20px 30px;color:var(--panel-ink);
+  font-family:"M PLUS 1 Code",ui-monospace,monospace;
+  font-size:.79rem;line-height:2.05;white-space:pre-wrap;word-break:break-word;
+  max-height:24rem;overflow:auto;
+}
+pre.brieftext::selection{background:var(--yellow);color:#232a22}
+.brief::after{content:'';position:absolute;left:0;right:0;bottom:0;height:46px;pointer-events:none;background:linear-gradient(rgba(0,0,0,0),var(--panel) 86%)}
+.briefnote{margin-top:12px;font-size:.79rem;color:var(--sumi-faint)}
+
+/* ---------- afterword ---------- */
+.after{margin-top:56px;border-top:1px solid var(--sumi);padding-top:26px}
+.after .lat{display:block;margin-bottom:12px}
+.after ol{margin:0;padding-left:1.25em;display:grid;gap:7px}
+.after li{font-size:.9rem;line-height:1.9}
+.before{margin-top:24px;padding-top:20px;border-top:1px solid var(--rule)}
+.before .lat{display:block;margin-bottom:10px}
+.before ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.before li{display:flex;gap:11px;font-size:.88rem;line-height:1.85}
+.before li::before{content:'';width:7px;height:7px;flex:none;margin-top:.72em;border:1px solid var(--moss);border-radius:1px}
+.after .closing{
+  margin-top:24px;padding-top:20px;border-top:1px solid var(--rule);
+  font-family:"Zen Old Mincho",serif;font-size:1rem;line-height:2.1;max-width:var(--measure);
+}
+.after .closing em{font-style:normal;background:linear-gradient(transparent 62%,var(--yellow) 62%,var(--yellow) 92%,transparent 92%)}
+
+.again{margin-top:44px}
+.ghost{border:1px solid var(--rule);padding:11px 24px;font-size:.86rem;border-radius:2px;letter-spacing:.06em;transition:.14s ease}
+.ghost:hover{border-color:var(--moss);background:var(--washi-2)}
+
+footer{margin-top:64px;border-top:1px solid var(--rule);padding-top:20px;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;color:var(--sumi-faint);font-size:.76rem}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,12px);
+  background:var(--panel);color:var(--panel-ink);border:1px solid var(--panel-rule);
+  padding:12px 22px;border-radius:2px;font-size:.85rem;
+  opacity:0;pointer-events:none;transition:.22s ease;z-index:40;
+  max-width:min(92vw,26rem);text-align:center;
+}
+.toast[data-show="1"]{opacity:1;transform:translate(-50%,0)}
+
+.rise{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+  .choice:hover::after{transform:scaleX(1)}
+}
+@media print{
+  .cta,.copy,.again,.chips,.toast,.back{display:none!important}
+  body{background:#fff}
+  pre.brieftext{max-height:none;overflow:visible}
+  .brief::after{display:none}
+}
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <span class="lat-cap">Nine questions before you write</span>
+    <h1>記事の<em>たね</em>を、<br>見つける。</h1>
+    <p class="lede">書きたいことばを、ひとつ。はい／いいえに9回答えるだけで、だれに何をどう書くかが決まります。最後に、AIライターへ渡す発注書ができあがります。</p>
+  </header>
+  <hr class="rule">
+
+  <!-- ============ 1. テーマ ============ -->
+  <section id="sTheme">
+    <div class="genko">
+      <div class="cells" id="cells" aria-hidden="true"></div>
+      <p class="cellcap">書きたいことばを、ひとつのマスから。</p>
+    </div>
+
+    <form class="entry" id="themeForm">
+      <input id="themeInput" type="text" maxlength="20" autocomplete="off" placeholder="例：朝ごはん、保護猫、合氣道、ふるさと納税">
+      <button class="cta" type="submit">はじめる</button>
+    </form>
+
+    <div class="chips">
+      <span class="lat">or pick one</span>
+      <button class="chip" type="button">朝ごはん</button>
+      <button class="chip" type="button">保護猫</button>
+      <button class="chip" type="button">合氣道</button>
+      <button class="chip" type="button">ふるさと納税</button>
+      <button class="chip" type="button">スマホ写真</button>
+      <button class="chip" type="button">冬支度</button>
+    </div>
+
+    <div class="gets">
+      <div class="get"><span class="lat">i.</span><p><b>だれに、何を</b>伝える記事なのかが決まります</p></div>
+      <div class="get"><span class="lat">ii.</span><p>タイトルのたたき台と、<b>見出しの骨組み</b>が出ます</p></div>
+      <div class="get"><span class="lat">iii.</span><p>AIにそのまま貼れる<b>発注書</b>が手に入ります</p></div>
+    </div>
+  </section>
+
+  <!-- ============ 2. 質問 ============ -->
+  <section id="sQ" hidden>
+    <div class="qhead">
+      <span class="themetag">書きたいことば<b id="qTheme"></b></span>
+      <div class="cells mini" id="qcells" role="group" aria-label="回答した質問"></div>
+    </div>
+    <div class="qbody" aria-live="polite">
+      <p class="qnum" id="qNum"></p>
+      <h2 class="qtext" id="qText"></h2>
+      <p class="qsub" id="qSub"></p>
+    </div>
+    <div class="choices">
+      <button class="choice" data-a="yes" type="button"><span class="k">はい</span><span class="w" id="wYes"></span></button>
+      <button class="choice" data-a="no" type="button"><span class="k">いいえ</span><span class="w" id="wNo"></span></button>
+    </div>
+    <button class="back" type="button" id="backBtn">ひとつ前にもどる</button>
+  </section>
+
+  <!-- ============ 3. 結果 ============ -->
+  <section id="sResult" hidden>
+    <div class="verdict">
+      <div class="vlabel">Your article</div>
+      <div>
+        <span class="themetag">診断結果 ／ 書きたいことば<b id="rTheme"></b></span>
+        <h2 class="typename" id="rName"></h2>
+        <p class="typeline" id="rLine"></p>
+      </div>
+    </div>
+
+    <section class="sec">
+      <header><h3>記事の設計図</h3><span class="lat-cap">Plan</span></header>
+      <dl class="spec" id="spec"></dl>
+    </section>
+
+    <section class="sec">
+      <header><h3>タイトルのたたき台</h3><span class="lat-cap">Titles</span></header>
+      <ol class="titles" id="titles"></ol>
+    </section>
+
+    <section class="sec">
+      <header><h3>見出しの骨組み</h3><span class="lat-cap">Outline</span></header>
+      <ol class="outline" id="outline"></ol>
+    </section>
+
+    <section class="sec">
+      <header><h3>AIへの発注書</h3><span class="lat-cap">Brief</span></header>
+      <div class="brief">
+        <div class="briefbar">
+          <span class="lat-cap">Paste into Gemini or ChatGPT</span>
+          <button class="copy" type="button" id="copyBtn">発注書をコピー</button>
+        </div>
+        <pre class="brieftext" id="briefText"></pre>
+      </div>
+      <p class="briefnote">発注書は下にも続いています。コピーすれば全文が入ります。</p>
+    </section>
+
+    <div class="after">
+      <span class="lat">How to use it</span>
+      <ol>
+        <li>発注書をコピーして、GeminiかChatGPTに貼りつけて送る</li>
+        <li>AIから質問が3つ返ってきます。思い出せる範囲で答える</li>
+        <li>タイトル案 → 見出し → 本文、の順に出てきます</li>
+        <li>本文のあと、AIが「どこを厚くしますか」と聞いてきます。直したいところを伝えると、<b>その部分だけ</b>書き直してくれます</li>
+        <li>できあがったら、noteやNotionに下書きとして貼る</li>
+      </ol>
+      <div class="before">
+        <span class="lat">Before you publish</span>
+        <ul>
+          <li>〈要確認〉の印が、すべて消えている</li>
+          <li>自分にしか書けない話が、1つ以上入っている</li>
+          <li>声に出して読んで、息が続かない一文を切った</li>
+        </ul>
+      </div>
+      <p class="closing">AIに書いてもらったら、最後に<em>あなたにしか書けない一行</em>を足してください。それでこの記事は、あなたの記事になります。</p>
+    </div>
+
+    <div class="again"><button class="ghost" type="button" id="againBtn">もういちど診断する</button></div>
+  </section>
+
+  <footer>
+    <span>株式会社PLATINUM ZONE ／ 2026年9月 ライティングコース</span>
+    <span class="lat">Kiji no Tane</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+var QUESTIONS = [
+  { key:"own", q:"そのテーマについて、自分の話ができますか？",
+    sub:"やってみたこと、見たこと、聞いたこと、感じたこと。どれでも「自分の話」です。",
+    yes:"自分の話を軸にした記事になります", no:"調べたことを整理して伝える記事になります" },
+  { key:"howto", q:"「こうするといいですよ」と、やり方や手順を伝えられますか？",
+    sub:"完璧でなくて大丈夫。ひとつでも言えそうなら「はい」でいいです。",
+    yes:"やり方を教える記事になります", no:"よさや全体像を伝える記事になります" },
+  { key:"beginner", q:"読んでほしい相手は、そのテーマをまだよく知らない人ですか？",
+    sub:"「まったく知らない友だちに話すなら」で考えてみてください。",
+    yes:"はじめての人向けの言葉づかいに", no:"すこし知っている人向けに、一歩深く" },
+  { key:"action", q:"読み終わったあと、その人に何かしてみてほしいですか？",
+    sub:"試す・行く・買う・はじめる・調べる、など。",
+    yes:"背中を押す締めくくりに", no:"「なるほど」と納得してもらう締めくくりに" },
+  { key:"stuck", q:"そのテーマには、多くの人がつまずいたり迷ったりするところがありますか？",
+    sub:"自分がつまずいたことでも、人から聞いた話でもかまいません。",
+    yes:"つまずきの話から書き出します", no:"いいところの話から書き出します" },
+  { key:"choice", q:"種類ややり方がいくつかあって、「どれを選ぶか」で迷う人がいそうですか？",
+    sub:"道具・方法・お店・サービスなど、選択肢があるかどうかです。",
+    yes:"くらべて選ぶ形の見出しに", no:"順番に進む形の見出しに" },
+  { key:"number", q:"そのテーマについて、数字を出せますか？",
+    sub:"回数・期間・金額・人数・大きさ・時間など、なんでも構いません。",
+    yes:"数字を入れて具体的にします", no:"場面を描いて具体的にします" },
+  { key:"friendly", q:"文章は、友だちに話しかけるようなトーンにしたいですか？",
+    sub:"どちらを選んでも読みやすい記事になります。好みで決めてください。",
+    yes:"やわらかく、親しみやすい文体に", no:"落ち着いた、信頼感のある文体に" },
+  { key:"reach", q:"検索やSNSから、まだあなたを知らない人にも見つけてもらいたいですか？",
+    sub:"「届く」を優先するか、「伝わる」を優先するかの分かれ道です。",
+    yes:"「届く」を優先します（検索の言葉に合わせる）", no:"「伝わる」を優先します（心に残る言葉を選ぶ）" }
+];
+
+var TYPES = {
+  "own-howto":{ name:"じぶん発ノウハウ記事", paren:"自分の話をもとに、やり方を伝える記事",
+    line:"自分の話をもとに、やり方を伝える記事です。同じことを書いている人は他にもいますが、あなたの話が入った瞬間に、この記事だけのものになります。" },
+  "own-tell":{ name:"じぶん発レポート記事", paren:"自分が見つけたよさを、見たまま伝える記事",
+    line:"自分が見つけたよさを、見たまま伝える記事です。うまく書こうとするより、正直に書くほうが強い。それがこの型の良さです。" },
+  "res-howto":{ name:"やり方ガイド記事", paren:"調べたことを、迷わない順番に並べて教える記事",
+    line:"調べたことを、迷わない順番に並べて教える記事です。読者の「で、結局どうすれば？」に最短で答えられると、最後まで読まれます。" },
+  "res-tell":{ name:"入門まとめ記事", paren:"散らばっている情報を、はじめての人にもわかる形に整える記事",
+    line:"散らばっている情報を、はじめての人にもわかる形に整える記事です。新しいことを書かなくても、整理そのものが読者にとっての価値になります。" }
+};
+
+var TITLES = {
+  "own-howto":{ reach:["{T}のはじめ方｜遠回りしないための3つのコツ","初心者の{T}｜つまずきやすいところと、その抜け方","{T}を続けるために、最初にやっておきたいこと"],
+                tell :["{T}で、わたしがやめたこと・続けたこと","{T}のコツは、たぶんこれだけでいい","{T}を続けている人の、ふつうの一日"] },
+  "own-tell":{ reach:["{T}をやってみたら、思っていたのと違った","{T}のよさを、3つに絞って書いてみる","{T}が気になっている人へ｜正直なところを書きます"],
+               tell :["{T}のある日曜日","{T}に、すこし助けられた話","わたしが{T}をやめられない理由"] },
+  "res-howto":{ reach:["{T}のやり方｜はじめての人向けに、いちから解説","{T}に必要なものと、最初の一歩","{T}の始め方｜迷わないための手順まとめ"],
+                tell :["{T}、はじめるならここから","{T}のはじめの一歩を、いっしょに","今日{T}をはじめる人へのメモ"] },
+  "res-tell":{ reach:["{T}とは？ はじめての人にもわかるように説明します","{T}の基本を3分で｜よくある勘違いも整理","いまさら聞けない{T}のきほん"],
+               tell :["{T}って、つまりどういうこと？","{T}を、いちばんやさしい言葉で","{T}のことを、知らない人に話すつもりで"] }
+};
+
+var CELLS = 9;
+var state = { theme:"", qi:0, ans:{}, diag:null };
+var $ = function(id){ return document.getElementById(id); };
+var toastTimer=null;
+
+function toast(m){
+  var el=$("toast"); el.textContent=m; el.setAttribute("data-show","1");
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ el.removeAttribute("data-show"); },2800);
+}
+function show(id){
+  ["sTheme","sQ","sResult"].forEach(function(x){ $(x).hidden = (x!==id); });
+}
+
+/* ---------- 原稿用紙 ---------- */
+var themeCells=$("cells");
+for(var i=0;i<CELLS;i++){
+  var c=document.createElement("span"); c.className="c"; themeCells.appendChild(c);
+}
+function paintCells(v){
+  var chars=Array.from(v||"");
+  var kids=themeCells.children;
+  for(var i=0;i<CELLS;i++){
+    var ch = i<chars.length ? chars[i] : "";
+    if(chars.length>CELLS && i===CELLS-1) ch="…";
+    kids[i].textContent = ch;
+    if(ch) kids[i].classList.add("on"); else kids[i].classList.remove("on");
+  }
+}
+paintCells("");
+
+var qCells=$("qcells");
+QUESTIONS.forEach(function(_,i){
+  var b=document.createElement("button");
+  b.type="button"; b.className="c"; b.setAttribute("aria-label","質問"+(i+1));
+  b.addEventListener("click", function(){ if(i<=state.qi){ state.qi=i; renderQuestion(); } });
+  qCells.appendChild(b);
+});
+function paintQCells(){
+  var kids=qCells.children;
+  for(var i=0;i<kids.length;i++){
+    if(i<state.qi) kids[i].setAttribute("data-s","done");
+    else if(i===state.qi) kids[i].setAttribute("data-s","now");
+    else kids[i].removeAttribute("data-s");
+    kids[i].disabled = i>state.qi;
+  }
+}
+
+/* ---------- 診断ロジック ---------- */
+function typeKey(a){ return (a.own?"own-":"res-") + (a.howto?"howto":"tell"); }
+
+function buildOutline(a,T){
+  var o=[];
+  o.push({h:"リード文", d: a.stuck ? "読者の「"+T+"、なんだか難しそう」という気持ちに、まず寄りそう"
+                                   : "読者が「"+T+"、ちょっと気になる」と思った瞬間を思い出させる"});
+  if(a.beginner) o.push({h:T+"とは？ ひとことで言うと", d:"知らない人が置いていかれないよう、最初に一文で説明する"});
+  else o.push({h:T+"で、あと一歩ふみこむとどうなるか", d:"知っている人が「その先」を知りたくなる入り口をつくる"});
+  if(a.choice){
+    o.push({h:T+"のおもな種類は3つ。それぞれの向き・不向き", d:"ならべて、ちがいがひと目でわかるようにする"});
+    o.push({h:"タイプ別・あなたに合う"+T+"の選び方", d:"「こんな人にはこれ」の形で、読者が自分を見つけられるように"});
+  } else if(a.howto){
+    o.push({h:T+"をはじめる前に、そろえておくもの", d:"ここで止まる人が多いので、具体的に並べる"});
+    o.push({h:T+"のやり方を3ステップで", d:"順番どおりにやれば終わる、という形にする"});
+  } else {
+    o.push({h:T+"の、ここがいい。と思う3つのこと", d:"数を絞る。3つ以上は書かない"});
+    o.push({h:"意外と知られていない"+T+"の話", d:"読者が知らなそうなことを、ひとつだけ入れる"});
+  }
+  if(a.stuck) o.push({h:T+"でつまずきやすいところと、その抜け方", d:"「かんたんです」で片づけない。ここが記事のいちばんの価値になる"});
+  if(a.action) o.push({h:"まず、今日できるいちばん小さな一歩", d:"重すぎない行動を、ひとつだけ示す"});
+  o.push({h:"まとめ｜"+T+"を、あなたの言葉で", d:"言い直すだけで終わらせず、読者に手わたす一文で閉じる"});
+  return o;
+}
+
+function lengthGuide(n){
+  n=Math.max(1,n||3);
+  var lead=[150,200], per=[250,400], mat=[150,200];
+  var r=function(v){ return Math.round(v/50)*50; };
+  var min=r(lead[0]+per[0]*n+mat[0]), max=r(lead[1]+per[1]*n+mat[1]);
+  return { lead:lead, per:per, mat:mat, label:min+"〜"+max+"字くらい",
+           free:"伝えるのに必要なら、これより長くなって構いません" };
+}
+
+function makeDiag(){
+  var a=state.ans, T=state.theme, k=typeKey(a), t=TYPES[k];
+  var outline=buildOutline(a,T);
+  var g=lengthGuide(outline.length-2);
+  return {
+    name:t.name, paren:t.paren, line:t.line,
+    titles: TITLES[k][a.reach?"reach":"tell"].map(function(x){ return x.split("{T}").join(T); }),
+    outline: outline,
+    guide: g,
+    reachYes: !!a.reach,
+    own: !!a.own,
+    stuck: !!a.stuck,
+    reader: a.beginner ? T+"をまだよく知らない、これから知りたい人" : T+"をすこし知っていて、もう一歩ふみこみたい人",
+    goal: a.action ? "読み終わったあと、読者が「自分もやってみよう」と一歩動き出すこと"
+                   : "読み終わったあと、読者が「そういうことか」と納得し、だれかに話したくなること",
+    tone: a.friendly ? "ですます調で、友だちに話しかけるようなやわらかいトーンにする"
+                     : "ですます調で、落ち着いた信頼感のあるトーンにする",
+    concrete: a.number ? "数字（回数・期間・金額・人数など）を入れて具体的にする"
+                       : "「いつ・どこで・だれが」がわかる場面を書いて具体的にする",
+    reach: a.reach ? "「届く」を優先。タイトルと最初の見出しに「"+T+"」をそのまま入れ、検索する人の言葉づかいに合わせる"
+                   : "「伝わる」を優先。検索の言葉よりも、読んだ人の心に残る言葉を選ぶ"
+  };
+}
+
+function buildBrief(){
+  var d=state.diag, T=state.theme, g=d.guide, L=[];
+  L.push("あなたはWebライティングが得意な編集者です。");
+  L.push("わたしがディレクター、あなたがライターとして、1本の記事をいっしょにつくります。");
+  L.push("");
+  L.push("■ テーマ");
+  L.push(T);
+  L.push("");
+  L.push("■ 記事の種類");
+  L.push(d.name + "（" + d.paren + "）");
+  L.push("");
+  L.push("■ 想定読者");
+  L.push(d.reader);
+  L.push("");
+  L.push("■ この記事のゴール");
+  L.push(d.goal);
+  L.push("");
+  L.push("■ 記事の組み立て（この順番で書いてください）");
+  d.outline.forEach(function(o,i){ L.push((i+1) + ". " + o.h + "｜" + o.d); });
+  L.push("");
+  L.push("■ タイトルの方向（参考です。もっといい案があれば出してください）");
+  d.titles.forEach(function(t){ L.push("・" + t); });
+  L.push("");
+  L.push("■ 書き方のルール");
+  L.push("・" + d.tone);
+  L.push("・1文は60字くらいまで。3〜4文でひとつの段落にする");
+  L.push("・専門用語を使ったら、その場でひとこと説明を添える");
+  L.push("・" + d.concrete);
+  L.push("・" + d.reach);
+  L.push("・出来事の順ではなく、読者が知りたい順に並べる（日記ではなく記事にする）");
+  L.push("・「〜と言われています」でごまかさない。言い切るか、根拠を書く");
+  L.push("・事実があいまいな部分は、断定せず〈要確認〉と書く");
+  L.push("");
+  L.push("■ 避けたいこと");
+  L.push("・だれにでも当てはまる一般論だけで終わること");
+  L.push("・調べればわかることの、寄せ集めになること");
+  L.push(d.stuck ? "・「かんたんです」で片づけて、つまずくところに触れないこと"
+                 : "・結論が後まわしになって、何の話かわからなくなること");
+  L.push("");
+  L.push("■ 長さ");
+  L.push("全体で" + g.label + "。" + g.free + "。");
+  L.push("見出し1つにつき" + g.per[0] + "〜" + g.per[1] + "字くらいが目安ですが、");
+  L.push("字数に合わせて内容を削らないでください。");
+  L.push("");
+  L.push("■ 進めかた（この順番でお願いします）");
+  L.push("1. まず、わたしに質問を3つしてください。");
+  L.push(d.own ? "   わたししか知らない「自分の話」を引き出す質問にしてください。"
+               : "   この記事をわたしらしくするために、わたしの考えや立場を引き出す質問にしてください。");
+  L.push("2. わたしの答えを受けて、タイトル案を5つ出してください。");
+  L.push("3. わたしが1つ選んだら、見出し構成（H2・H3）を提案してください。");
+  L.push("4. わたしがOKと言ったら、本文を書いてください。");
+  L.push("5. 本文を書いたら、そこで終わりにしないでください。");
+  L.push("   記事をもっとよくするために、わたしに質問を3つしてください。");
+  L.push("   ・どの見出しを、もっと詳しく書きたいか");
+  L.push("   ・読者がもう一歩知りたがりそうなのはどこか（あなたの見立ても添えて）");
+  L.push("   ・まだ入れていない自分の話・数字・具体的な場面はないか");
+  L.push("6. わたしの答えを受けて、その部分だけを書き直してください。");
+  L.push("   全文は書き直さず、どこを直したかを教えてください。");
+  L.push("");
+  L.push("いきなり本文を書かず、1の質問から始めてください。");
+  return L.join("\n");
+}
+
+/* ---------- 描画 ---------- */
+function renderQuestion(){
+  var q=QUESTIONS[state.qi];
+  $("qNum").innerHTML = "0" + (state.qi+1) + "<span>/ 0" + QUESTIONS.length + "</span>";
+  $("qText").textContent = q.q;
+  $("qSub").textContent = q.sub;
+  $("wYes").textContent = q.yes;
+  $("wNo").textContent = q.no;
+  $("backBtn").hidden = state.qi===0;
+  paintQCells();
+}
+
+function renderResult(){
+  var d=state.diag;
+  $("rTheme").textContent = state.theme;
+  $("rName").textContent = d.name + "。";
+  $("rLine").textContent = d.line;
+
+  var rows=[["想定読者",d.reader],["記事のゴール",d.goal],["文体",d.tone],
+            ["具体化のしかた",d.concrete],["見つけてもらい方",d.reach],
+            ["長さのめやす", d.guide.label+"（"+d.guide.free+"）"]];
+  var dl=$("spec"); dl.textContent="";
+  rows.forEach(function(r){
+    var w=document.createElement("div");
+    var dt=document.createElement("dt"); dt.textContent=r[0];
+    var dd=document.createElement("dd"); dd.textContent=r[1];
+    w.appendChild(dt); w.appendChild(dd); dl.appendChild(w);
+  });
+
+  var ol=$("titles"); ol.textContent="";
+  d.titles.forEach(function(t,i){
+    var li=document.createElement("li");
+    var n=document.createElement("span"); n.className="n"; n.textContent=["i.","ii.","iii."][i]||(i+1)+".";
+    var s=document.createElement("span"); s.className="t"; s.textContent=t;
+    li.appendChild(n); li.appendChild(s); ol.appendChild(li);
+  });
+
+  var out=$("outline"); out.textContent="";
+  d.outline.forEach(function(o){
+    var li=document.createElement("li");
+    var box=document.createElement("div");
+    var h=document.createElement("div"); h.className="oh"; h.textContent=o.h;
+    var dd=document.createElement("div"); dd.className="od"; dd.textContent=o.d;
+    box.appendChild(h); box.appendChild(dd); li.appendChild(box); out.appendChild(li);
+  });
+
+  $("briefText").textContent = buildBrief();
+  var cb=$("copyBtn"); cb.textContent="発注書をコピー"; cb.removeAttribute("data-done");
+}
+
+/* ---------- コピー ---------- */
+function fallbackCopy(text){
+  var ta=document.createElement("textarea");
+  ta.value=text; ta.setAttribute("readonly","");
+  ta.style.position="fixed"; ta.style.top="-1000px"; ta.style.opacity="0";
+  document.body.appendChild(ta);
+  ta.select(); ta.setSelectionRange(0,text.length);
+  var ok=false;
+  try{ ok=document.execCommand("copy"); }catch(e){ ok=false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+function selectBrief(){
+  try{
+    var r=document.createRange(); r.selectNodeContents($("briefText"));
+    var s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }catch(e){}
+}
+$("copyBtn").addEventListener("click", function(){
+  var btn=this, text=$("briefText").textContent;
+  var done=function(){
+    btn.textContent="コピーしました"; btn.setAttribute("data-done","1");
+    toast("発注書をコピーしました。GeminiかChatGPTに貼りつけてください。");
+    setTimeout(function(){ btn.textContent="発注書をコピー"; btn.removeAttribute("data-done"); },3200);
+  };
+  var fail=function(){ selectBrief(); toast("選択しました。Ctrl+C（Macは⌘+C）でコピーしてください。"); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ if(fallbackCopy(text)) done(); else fail(); });
+  } else { if(fallbackCopy(text)) done(); else fail(); }
+});
+
+/* ---------- イベント ---------- */
+$("themeInput").addEventListener("input", function(){ paintCells(this.value.trim()); });
+
+Array.prototype.forEach.call(document.querySelectorAll(".chip"), function(c){
+  c.addEventListener("click", function(){
+    var v=c.textContent;
+    $("themeInput").value=v; paintCells(v); $("themeInput").focus();
+  });
+});
+
+$("themeForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  var v=$("themeInput").value.trim();
+  if(!v){ toast("書きたいことばを、ひとつ入れてください。"); $("themeInput").focus(); return; }
+  state.theme=v; state.qi=0; state.ans={};
+  $("qTheme").textContent=v;
+  show("sQ"); renderQuestion();
+  $("sQ").classList.remove("rise"); void $("sQ").offsetWidth; $("sQ").classList.add("rise");
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+
+Array.prototype.forEach.call(document.querySelectorAll(".choice"), function(btn){
+  btn.addEventListener("click", function(){
+    state.ans[QUESTIONS[state.qi].key] = btn.getAttribute("data-a")==="yes";
+    if(state.qi < QUESTIONS.length-1){
+      state.qi++; renderQuestion();
+    } else {
+      state.diag = makeDiag();
+      renderResult();
+      show("sResult");
+      $("sResult").classList.add("rise");
+      var v=document.querySelector(".verdict");
+      if(v && v.scrollIntoView) v.scrollIntoView({block:"start", behavior:"smooth"});
+      else window.scrollTo({top:0, behavior:"smooth"});
+    }
+  });
+});
+
+$("backBtn").addEventListener("click", function(){ if(state.qi>0){ state.qi--; renderQuestion(); } });
+
+$("againBtn").addEventListener("click", function(){
+  state={ theme:"", qi:0, ans:{}, diag:null };
+  $("themeInput").value=""; paintCells("");
+  $("sResult").classList.remove("rise");
+  show("sTheme");
+  window.scrollTo({top:0, behavior:"smooth"});
+  setTimeout(function(){ $("themeInput").focus(); },420);
+});
+
+})();
+</script>
