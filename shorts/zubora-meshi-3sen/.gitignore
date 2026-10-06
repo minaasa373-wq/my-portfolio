@@ -1,0 +1,7 @@
+# 外部素材は fetch_assets.sh で取得（ライセンス表記ファイルは同梱）
+assets/fonts/*.ttf
+assets/voice/*.htsvoice
+# 任意の聞き取り検査用モデル（約713MB）
+assets/asr/
+voice_in/
+__pycache__/
