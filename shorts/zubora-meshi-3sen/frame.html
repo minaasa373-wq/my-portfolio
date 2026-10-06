@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>ズボラ飯3選 フレーム</title>
+<style>
+  @font-face { font-family: 'MPR'; src: url('assets/fonts/MPLUSRounded1c-ExtraBold.ttf'); font-weight: 800; }
+  @font-face { font-family: 'MPR'; src: url('assets/fonts/MPLUSRounded1c-Black.ttf'); font-weight: 900; }
+  :root {
+    --ink: #3B2A20; --cream: #FFF3DF; --dot: #FFE3B5;
+    --orange: #FF7A1A; --blue: #1E6FE8; --pink: #E8337D;
+  }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; }
+  body {
+    position: relative; font-family: 'MPR', sans-serif; color: var(--ink);
+    background-color: var(--cream);
+    background-image: radial-gradient(var(--dot) 7px, transparent 8px);
+    background-size: 56px 56px;
+  }
+  /* 見た目は全項目で共通（項目ごとに演出を足さない） */
+  #series { position: absolute; top: 150px; left: 0; right: 0; text-align: center;
+    font-weight: 800; font-size: 38px; letter-spacing: 0.06em; color: rgba(59, 42, 32, 0.7); white-space: nowrap; }
+  #pill { position: absolute; top: 214px; left: 50%; transform: translateX(-50%); height: 84px; box-sizing: border-box;
+    padding: 0 46px; border: 6px solid var(--ink); border-radius: 999px; background: var(--orange); color: #fff;
+    font-weight: 900; font-size: 50px; line-height: 70px; box-shadow: 0 7px 0 var(--ink); white-space: nowrap; }
+  #pill .num { font-size: 68px; margin-right: 4px; }
+  #namebox { position: absolute; top: 310px; left: 60px; width: 960px; height: 250px;
+    display: flex; align-items: center; justify-content: center; }
+  #name { font-weight: 900; font-size: 100px; line-height: 1.12; text-align: center; white-space: pre; }
+  #name .ln { background: linear-gradient(transparent 60%, rgba(255, 166, 64, 0.55) 60%, rgba(255, 166, 64, 0.55) 92%, transparent 92%);
+    padding: 0 10px; }
+  #card { position: absolute; top: 566px; left: 70px; width: 940px; height: 480px; border-radius: 44px;
+    background: #fff; box-shadow: 0 12px 0 var(--ink); overflow: hidden; }
+  #card > svg { position: absolute; left: 0; top: 0; }
+  #card::after { content: ''; position: absolute; inset: 0; border: 7px solid var(--ink); border-radius: 44px; pointer-events: none; }
+  #card svg text { font-family: 'MPR', sans-serif; }
+  .cbox { position: absolute; left: 70px; width: 940px; height: 186px; box-sizing: border-box;
+    border: 7px solid var(--ink); border-radius: 40px; box-shadow: 0 10px 0 var(--ink);
+    display: flex; align-items: center; justify-content: center; }
+  #blue { top: 1072px; background: var(--blue); }
+  #pink { top: 1280px; background: var(--pink); }
+  #blue.empty, #pink.empty { background: rgba(255, 255, 255, 0.4); border: 6px dashed rgba(59, 42, 32, 0.22); box-shadow: none; }
+  .ctext { color: #fff; font-weight: 800; font-size: 62px; line-height: 1.24; text-align: center; white-space: pre; }
+</style>
+</head>
+<body>
+  <div id="series">＃ズボラ飯　＃下ごしらえ不要</div>
+  <div id="pill"></div>
+  <div id="namebox"><div id="name"></div></div>
+  <div id="card"></div>
+  <div class="cbox blue" id="blue"><div class="ctext"></div></div>
+  <div class="cbox pink" id="pink"><div class="ctext"></div></div>
+
+<script src="illustrations.js"></script>
+<script>
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  // 字幕の文字が入ってよい範囲（YouTube ショートの右側ボタンにかからない幅）
+  const SAFE_RIGHT = 943;
+
+  function renderCue(c) {
+    document.getElementById('pill').innerHTML = c.number ? `<span class="num">${c.number}</span>品目` : esc(c.label);
+    document.getElementById('name').innerHTML = c.name.split('\n').map((l) => `<span class="ln">${esc(l)}</span>`).join('\n');
+    document.getElementById('card').innerHTML = ILLUST.svg(c.image);
+    for (const id of ['blue', 'pink']) {
+      const box = document.getElementById(id);
+      box.className = 'cbox ' + id + (c[id] ? '' : ' empty');
+      box.querySelector('.ctext').textContent = c[id] || '';
+    }
+  }
+
+  function textRect(el) { // 文字そのものの外接矩形
+    const r = document.createRange();
+    r.selectNodeContents(el);
+    return r.getBoundingClientRect();
+  }
+
+  function inside(b, area, tol = 0.5) {
+    return b.left >= area.left - tol && b.right <= area.right + tol && b.top >= area.top - tol && b.bottom <= area.bottom + tol;
+  }
+
+  function fitAndCheck(cue) {
+    const out = [];
+    const add = (what, b, area, extra = {}) => out.push({ cue, what, ok: inside(b, area) && (extra.ok ?? true),
+      box: [b.left, b.top, b.right, b.bottom].map(Math.round), area: [area.left, area.top, area.right, area.bottom].map(Math.round), ...extra });
+
+    // 大見出し：枠に収まるまで文字を小さく
+    const name = document.getElementById('name');
+    const nb = document.getElementById('namebox').getBoundingClientRect();
+    const nameArea = { left: nb.left + 10, right: nb.right - 10, top: nb.top, bottom: nb.bottom };
+    let fs = 100;
+    name.style.fontSize = fs + 'px';
+    while (!inside(textRect(name), nameArea) && fs > 64) { fs -= 2; name.style.fontSize = fs + 'px'; }
+    add('大見出し', textRect(name), nameArea, { size: fs });
+
+    add('番号', document.getElementById('pill').getBoundingClientRect(), { left: 60, right: 1020, top: 200, bottom: 310 });
+    add('シリーズ名', textRect(document.getElementById('series')), { left: 60, right: 1020, top: 140, bottom: 205 });
+
+    // 青・ピンクのコメント：2行・枠内・右側ボタンにかからない幅
+    for (const id of ['blue', 'pink']) {
+      const box = document.getElementById(id), t = box.querySelector('.ctext');
+      if (!t.textContent) continue;
+      let s = 62;
+      t.style.fontSize = s + 'px';
+      while ((t.scrollWidth > 2 * (SAFE_RIGHT - 540) || t.offsetHeight > 150) && s > 50) { s -= 2; t.style.fontSize = s + 'px'; }
+      const bb = box.getBoundingClientRect();
+      const area = { left: bb.left + 17, right: Math.min(bb.right - 17, SAFE_RIGHT), top: bb.top + 12, bottom: bb.bottom - 12 };
+      add(id === 'blue' ? '青コメント' : 'ピンクコメント', textRect(t), area,
+        { size: s, lines: t.textContent.split('\n').length, ok: t.textContent.split('\n').length <= 2 });
+    }
+
+    // 画像の中の札：文字に合わせて枠を広げ、カードからはみ出していないか・札どうしが重なっていないか
+    const card = document.getElementById('card').getBoundingClientRect();
+    const cardArea = { left: card.left + 10, right: card.right - 10, top: card.top + 10, bottom: card.bottom - 10 };
+    const tagRects = [];
+    document.querySelectorAll('#card g.tag').forEach((gEl) => {
+      const t = gEl.querySelector('text'), r = gEl.querySelector('rect'), pad = +gEl.dataset.pad;
+      const b = t.getBBox();
+      r.setAttribute('x', b.x - pad); r.setAttribute('y', b.y - pad * 0.55);
+      r.setAttribute('width', b.width + pad * 2); r.setAttribute('height', b.height + pad * 1.1);
+      const rb = r.getBoundingClientRect();
+      tagRects.push({ text: t.textContent, rb });
+      add('画像内の札「' + t.textContent + '」', rb, cardArea);
+    });
+    for (let i = 0; i < tagRects.length; i++) for (let j = i + 1; j < tagRects.length; j++) {
+      const a = tagRects[i].rb, b = tagRects[j].rb;
+      const overlap = a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+      if (overlap) out.push({ cue, what: `札の重なり「${tagRects[i].text}」と「${tagRects[j].text}」`, ok: false });
+    }
+    document.querySelectorAll('#card text').forEach((t) => {
+      if (t.closest('g.tag')) return;
+      add('画像内の文字「' + t.textContent + '」', t.getBoundingClientRect(), cardArea);
+    });
+    return out;
+  }
+</script>
+</body>
+</html>

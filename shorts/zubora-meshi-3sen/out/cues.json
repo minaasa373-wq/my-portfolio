@@ -1,0 +1,152 @@
+[
+ {
+  "cue": "s1_1_name",
+  "label": "テーマ",
+  "number": null,
+  "name": "下ごしらえ不要！\nズボラ飯3選",
+  "image": "op_noknife",
+  "active": "name",
+  "blue": null,
+  "pink": null
+ },
+ {
+  "cue": "s1_2_blue",
+  "label": "テーマ",
+  "number": null,
+  "name": "下ごしらえ不要！\nズボラ飯3選",
+  "image": "op_noknife",
+  "active": "blue",
+  "blue": "包丁もまな板も\n使わないよ",
+  "pink": null
+ },
+ {
+  "cue": "s1_3_pink",
+  "label": "テーマ",
+  "number": null,
+  "name": "下ごしらえ不要！\nズボラ飯3選",
+  "image": "lineup",
+  "active": "pink",
+  "blue": "包丁もまな板も\n使わないよ",
+  "pink": "疲れた日の\n強い味方だよ！"
+ },
+ {
+  "cue": "s2_1_name",
+  "label": "1品目",
+  "number": 1,
+  "name": "レンジで釜玉うどん",
+  "image": "d1_dish",
+  "active": "name",
+  "blue": null,
+  "pink": null
+ },
+ {
+  "cue": "s2_2_blue",
+  "label": "1品目",
+  "number": 1,
+  "name": "レンジで釜玉うどん",
+  "image": "d1_dish",
+  "active": "blue",
+  "blue": "帰ってすぐ\n食べたい夜に！",
+  "pink": null
+ },
+ {
+  "cue": "s2_3_pink",
+  "label": "1品目",
+  "number": 1,
+  "name": "レンジで釜玉うどん",
+  "image": "d1_how",
+  "active": "pink",
+  "blue": "帰ってすぐ\n食べたい夜に！",
+  "pink": "冷凍うどんをチンして\n卵とめんつゆをかけるだけ"
+ },
+ {
+  "cue": "s3_1_name",
+  "label": "2品目",
+  "number": 2,
+  "name": "炊き込みサバ缶ごはん",
+  "image": "d2_dish",
+  "active": "name",
+  "blue": null,
+  "pink": null
+ },
+ {
+  "cue": "s3_2_blue",
+  "label": "2品目",
+  "number": 2,
+  "name": "炊き込みサバ缶ごはん",
+  "image": "d2_dish",
+  "active": "blue",
+  "blue": "おかずを作る\n元気がない日に",
+  "pink": null
+ },
+ {
+  "cue": "s3_3_pink",
+  "label": "2品目",
+  "number": 2,
+  "name": "炊き込みサバ缶ごはん",
+  "image": "d2_how",
+  "active": "pink",
+  "blue": "おかずを作る\n元気がない日に",
+  "pink": "無洗米に缶汁とめんつゆ\nサバをのせて炊くだけ"
+ },
+ {
+  "cue": "s4_1_name",
+  "label": "3品目",
+  "number": 3,
+  "name": "ツナのレンジパスタ",
+  "image": "d3_dish",
+  "active": "name",
+  "blue": null,
+  "pink": null
+ },
+ {
+  "cue": "s4_2_blue",
+  "label": "3品目",
+  "number": 3,
+  "name": "ツナのレンジパスタ",
+  "image": "d3_dish",
+  "active": "blue",
+  "blue": "鍋もザルも\n出したくない日に",
+  "pink": null
+ },
+ {
+  "cue": "s4_3_pink",
+  "label": "3品目",
+  "number": 3,
+  "name": "ツナのレンジパスタ",
+  "image": "d3_how",
+  "active": "pink",
+  "blue": "鍋もザルも\n出したくない日に",
+  "pink": "パスタ容器でチンして\nツナとめんつゆで和えるだけ"
+ },
+ {
+  "cue": "s5_1_name",
+  "label": "まとめ",
+  "number": null,
+  "name": "3品とも包丁いらず！",
+  "image": "lineup",
+  "active": "name",
+  "blue": null,
+  "pink": null
+ },
+ {
+  "cue": "s5_2_blue",
+  "label": "まとめ",
+  "number": null,
+  "name": "3品とも包丁いらず！",
+  "image": "ed_check",
+  "active": "blue",
+  "blue": "時間と水加減は\n商品と炊飯器の表示どおりに",
+  "pink": null
+ },
+ {
+  "cue": "s5_3_pink",
+  "label": "まとめ",
+  "number": null,
+  "name": "3品とも包丁いらず！",
+  "image": "ed_save",
+  "active": "pink",
+  "blue": "時間と水加減は\n商品と炊飯器の表示どおりに",
+  "pink": "保存して\n今夜さっそく作ってみてね！"
+ }
+]
